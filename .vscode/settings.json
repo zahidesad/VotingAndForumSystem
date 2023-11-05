@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "person.h": "c",
+        "string.h": "c",
+        "stdlib.h": "c",
+        "topic.h": "c"
+    }
+}

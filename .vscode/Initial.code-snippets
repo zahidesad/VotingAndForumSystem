@@ -1,0 +1,16 @@
+{
+	"My Custom Initial C Code": {
+		"prefix": "main",
+		"body": [
+		  "#include <stdio.h>",
+		  "#include <stdlib.h>",
+		  "",
+		  "int main() {",
+		  "            ", 	
+		  "            ", 	
+		  "    return 0;",
+		  "}"
+		],
+		"description": "My custom initial C code snippet"
+	  }
+}
