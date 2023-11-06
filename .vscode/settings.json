@@ -3,6 +3,8 @@
         "person.h": "c",
         "string.h": "c",
         "stdlib.h": "c",
-        "topic.h": "c"
-    }
+        "topic.h": "c",
+        "stdio.h": "c"
+    },
+
 }

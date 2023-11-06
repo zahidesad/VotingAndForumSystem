@@ -10,5 +10,8 @@ Vote createVote(int id, Person voter, Topic topic, int topicOptionIndex){
     vote.voter = voter;
     vote.topic = topic;
     vote.topicOptionIndex = topicOptionIndex;
+    insertVote(vote);
+    votes[voteCount] = vote;
+    voteCount++;
     return vote;
 }

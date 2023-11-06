@@ -15,9 +15,21 @@ static int voteCount = 0;
 static Topic topics[MAX];
 static int topicCount = 0;
 
+Person *login(char *mail, char *password){
+
+    for (int i = 0; i < userCount; i++)
+    {
+        if (strcmp(users[i].mail, mail) == 0 && strcmp(users[i].password, password) == 0)
+        {
+            return &users[i];
+        }
+    }
+    Person *nullP = NULL;
+    return nullP;
+}
 
 int insertPerson(Person person){
-     FILE *file = fopen("../person.txt", "a");
+    FILE *file = fopen("../txtFiles/person.txt", "a");
 
     if (file == NULL)
     {
@@ -36,8 +48,44 @@ int insertPerson(Person person){
 
 }
 
+int insertTopic(Topic topic){
+    FILE *file = fopen("../txtFiles/topic.txt", "a");
+
+    if (file == NULL)
+    {
+        printf("Error while opening the file!");
+        return 1;
+    }
+    fprintf(file,"%d\n", topic.id);
+    fprintf(file,"%s\n", topic.topicName);
+    for (int i = 0; i < topic.optionLength; i++) {
+        fprintf(file,"%s\n", topic.topicOptions[i]);
+    }
+    fprintf(file,"%d\n", topic.optionLength);
+
+    fclose(file);
+    return 0;
+}
+
+int insertVote(Vote vote){
+    FILE *file = fopen("../txtFiles/vote.txt", "a");
+
+    if (file == NULL)
+    {
+        printf("Error while opening the file!");
+        return 1;
+    }
+    fprintf(file,"%d\n", vote.id);
+    fprintf(file,"%s\n", vote.voter.name);
+    fprintf(file,"%s\n", vote.topic.topicName);
+    fprintf(file,"%d\n", vote.topicOptionIndex);
+
+    fclose(file);
+    return 0;
+}
+
 int readPerson(){
-    FILE *file = fopen("../person.txt", "r");
+    FILE *file = fopen("../txtFiles/person.txt", "r");
 
     if (file == NULL)
     {
