@@ -11,7 +11,7 @@ typedef struct Person
     bool isAdmin;        
 }Person;
 
-Person createPerson(int id, char *name, char *username, char *password, char *mail, bool isAdmin);
+Person *createPerson(int id, char *name, char *username, char *password, char *mail, bool isAdmin);
 
 
 #endif
