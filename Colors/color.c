@@ -24,6 +24,10 @@ void Color_Cyan() {
     printf(ANSI_COLOR_CYAN);
 }
 
+void Color_White(){
+    printf(ANSI_COLOR_WHITE);
+}
+
 void Color_Reset() {
     printf(ANSI_COLOR_RESET);
 }

@@ -148,6 +148,212 @@ int readPerson()
     userCount = personCount;
 }
 
+int readTopic(){
+    
+}
+
+int deletePerson(int id){
+    FILE *file = fopen("../txtFiles/person.txt", "r");
+    FILE *temp = fopen("../txtFiles/temp.txt", "w");
+
+    if (file == NULL || temp == NULL)
+    {
+        printf("Error while opening the file!");
+        return 1;
+    }
+
+    Person *person;
+    Person *tempUsers[userCount-1];
+    char chunk[128];
+    int lineNum = 0;
+    int personCount = 0;
+    bool skipPerson = false;
+    while (fgets(chunk, sizeof(chunk), file) != NULL)
+    {
+        if (chunk != NULL)
+        {
+            size_t newline_pos = strcspn(chunk, "\n"); 
+            chunk[newline_pos] = '\0';
+        }
+
+        if (lineNum % 6 == 0)
+        {
+            person = (Person *)malloc(sizeof(Person));
+            person->id = atoi(chunk);
+            if(person->id == id){
+                skipPerson = true;
+            }
+            else{
+                fprintf(temp, "%d\n", person->id);
+            }
+            lineNum++;
+        }
+        else if (lineNum % 6 == 1)
+        {
+            strcpy(person->name, chunk);
+            if(!skipPerson){
+                fprintf(temp, "%s\n", person->name);
+            }
+            lineNum++;
+        }
+        else if (lineNum % 6 == 2)
+        {
+            strcpy(person->username, chunk);
+            if(!skipPerson){
+                fprintf(temp, "%s\n", person->username);
+            }
+            lineNum++;
+        }
+        else if (lineNum % 6 == 3)
+        {
+            strcpy(person->password, chunk);
+            if(!skipPerson){
+                fprintf(temp, "%s\n", person->password);
+            }
+            lineNum++;
+        }
+        else if (lineNum % 6 == 4)
+        {
+            strcpy(person->mail, chunk);
+            if(!skipPerson){
+                fprintf(temp, "%s\n", person->mail);
+            }
+            lineNum++;
+        }
+        else if (lineNum % 6 == 5)
+        {
+            person->isAdmin = atoi(chunk);
+            if(!skipPerson){
+                fprintf(temp, "%d\n", person->isAdmin);
+                tempUsers[personCount] = person;
+                personCount++;
+            }
+            skipPerson = false;
+            lineNum++;
+        }
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    remove("../txtFiles/person.txt"); 
+    rename("../txtFiles/temp.txt", "../txtFiles/person.txt");
+
+    // Clear and update users array
+    memset(users, 0, sizeof(users));
+    for(int i = 0; i < personCount; i++){
+        users[i] = *tempUsers[i];
+    }
+    userCount = personCount;
+
+    return 0;
+}
+
+int updatePersonInformation(int id, char *newName, char *newUsername, char *newPassword, char *newMail){
+    FILE *file = fopen("../txtFiles/person.txt", "r");
+    FILE *temp = fopen("../txtFiles/temp.txt", "w");
+
+    if (file == NULL || temp == NULL)
+    {
+        printf("Error while opening the file!");
+        return 1;
+    }
+
+    Person *person;
+    Person *tempUsers[userCount];
+    char chunk[128];
+    int lineNum = 0;
+    int personCount = 0;
+    while (fgets(chunk, sizeof(chunk), file) != NULL)
+    {
+        if (chunk != NULL)
+        {
+            size_t newline_pos = strcspn(chunk, "\n"); 
+            chunk[newline_pos] = '\0';
+        }
+
+        if (lineNum % 6 == 0)
+        {
+            person = (Person *)malloc(sizeof(Person));
+            person->id = atoi(chunk);
+            if(person->id == id){
+                person->id = id;
+                strcpy(person->name, newName);
+                strcpy(person->username, newUsername);
+                strcpy(person->password, newPassword);
+                strcpy(person->mail, newMail);
+                if (person->id == 0) // Checking for admin 
+                {
+                    person->isAdmin = 1;
+                }else{
+                    person->isAdmin = 0;
+                }
+                
+                
+            }
+            fprintf(temp, "%d\n", person->id);
+            lineNum++;
+        }
+        else if (lineNum % 6 == 1)
+        {
+            if(person->id != id){
+                strcpy(person->name, chunk);
+            }
+            fprintf(temp, "%s\n", person->name);
+            lineNum++;
+        }
+        else if (lineNum % 6 == 2)
+        {
+            if(person->id != id){
+                strcpy(person->username, chunk);
+            }
+            fprintf(temp, "%s\n", person->username);
+            lineNum++;
+        }
+        else if (lineNum % 6 == 3)
+        {
+            if(person->id != id){
+                strcpy(person->password, chunk);
+            }
+            fprintf(temp, "%s\n", person->password);
+            lineNum++;
+        }
+        else if (lineNum % 6 == 4)
+        {
+            if(person->id != id){
+                strcpy(person->mail, chunk);
+            }
+            fprintf(temp, "%s\n", person->mail);
+            lineNum++;
+        }
+        else if (lineNum % 6 == 5)
+        {
+            if(person->id != id){
+                person->isAdmin = atoi(chunk);
+            }
+            fprintf(temp, "%d\n", person->isAdmin);
+            tempUsers[personCount] = person;
+            personCount++;
+            lineNum++;
+        }
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    remove("../txtFiles/person.txt"); 
+    rename("../txtFiles/temp.txt", "../txtFiles/person.txt");
+
+    // Clear and update users array
+    memset(users, 0, sizeof(users));
+    for(int i = 0; i < personCount; i++){
+        users[i] = *tempUsers[i];
+    }
+    userCount = personCount;
+
+    return 0;
+}
+
 int findVoteCountForTopic(Topic topic)
 {
     int total;

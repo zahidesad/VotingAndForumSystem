@@ -18,5 +18,4 @@ Person *createPerson(int id, char *name, char *username, char *password, char *m
     users[userCount] = *person;
     userCount++;
     return person;
-    printf("after return person");
 }

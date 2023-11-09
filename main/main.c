@@ -12,6 +12,7 @@ int main()
 {
     Person *admin = createPerson(0, "Admin", "admin", "123", "admin@gmail.com", true);
     Person *user = createPerson(1, "Emirhan", "emirhan", "123", "emirhan@gmail.com", false);
+    Person *user1 = createPerson(2, "Asim", "asim", "123", "asim@gmail.com", false);
     /*readPerson();
     printf("Name of admin : %s\n",users[0].name);
     printf("ID of user : %d\n",users[1].id);
@@ -35,8 +36,8 @@ int main()
     printf("Topic of vote : %s\n",vote.topic.topicName);
     printf("Topic Option Index of vote : %d\n",vote.topicOptionIndex);
     printf("Vote Count : %d\n", voteCount);*/
-
-    Display();
+     
+    //Display();
     return 0;
 }
 
@@ -51,7 +52,7 @@ int Display()
         if (isLoggedIn && account->isAdmin)
         {
             Color_Green();
-            printf("--------- Welcome Admin ---------", account->name);
+            printf("\n--------- Welcome Admin ---------\n", account->name);
             Color_Reset();
 
             int choice;
@@ -64,7 +65,9 @@ int Display()
             printf("3- Update Topic\n");
             printf("4- Delete Topic\n");
 
+            Color_White();
             printf("\nSelect an option : ");
+            Color_Reset();
             scanf("%d", &choice);
 
             switch (choice)
@@ -118,11 +121,16 @@ int Display()
         }
         else
         {
+            Color_Green();
+            printf("\n--------- WELCOME TO VOTING SYSTEM ---------\n");
+            Color_Reset();
             printf("1- Login\n");
             printf("2- Register\n");
             printf("3- Exit\n");
 
+            Color_White();
             printf("\nSelect an option: ");
+            Color_Reset();
             scanf("%d", &option);
 
             char name[30];
@@ -173,15 +181,19 @@ int Display()
                 gets(mail);
 
                 account = (createPerson(userCount, name, username, password, mail, 0));
-                printf("\nAccount created succesfully!\n");
+                Color_Green();
+                printf("\nAccount created succesfully!\n\n");
+                Color_Green();
                 isLoggedIn = 1;
                 break;
             case 3:
-                printf("Goodbye!\n");
+                Color_Magenta();
+                printf("\n------------ Goodbye! ------------\n");
+                Color_Reset();
                 return 0;
             default:
                 Color_Red();
-                printf("Invalid option. Please select 1, 2, or 3.\n");
+                printf("Invalid option. Please select 1, 2 or 3.\n");
                 Color_Reset();
                 while (getchar() != '\n'); // To prevent it from going into an infinite loop when I enter data of String type.
                 break;
