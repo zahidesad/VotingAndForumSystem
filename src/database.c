@@ -16,6 +16,9 @@ static int voteCount = 0;
 static Topic topics[MAX];
 static int topicCount = 0;
 
+static const char *const categories_names[];
+
+
 Person *login(char *username, char *password)
 {
 
@@ -53,7 +56,6 @@ int insertPerson(Person person)
 int insertTopic(Topic topic)
 {
     FILE *file = fopen("../txtFiles/topic.txt", "a");
-
     if (file == NULL)
     {
         printf("Error while opening the file!");
@@ -61,12 +63,13 @@ int insertTopic(Topic topic)
     }
     fprintf(file, "%d\n", topic.id);
     fprintf(file, "%s\n", topic.topicName);
+    fprintf(file, "%d\n", topic.optionLength);
+    fprintf(file, "%d\n", topic.isOpen);
+    fprintf(file, "%d\n", topic.category);
     for (int i = 0; i < topic.optionLength; i++)
     {
         fprintf(file, "%s\n", topic.topicOptions[i]);
     }
-    fprintf(file, "%d\n", topic.optionLength);
-
     fclose(file);
     return 0;
 }
@@ -148,11 +151,83 @@ int readPerson()
     userCount = personCount;
 }
 
-int readTopic(){
-    
+int readTopic()
+{
+    FILE *file = fopen("../txtFiles/topic.txt", "r");
+
+    if (file == NULL)
+    {
+        printf("Error while opening the file!");
+        return 1;
+    }
+
+    Topic *topic;
+    char chunk[200];
+    int lineNum = 0;
+    topicCount = 0;
+    int optionCount = 0;
+    while (fgets(chunk, sizeof(chunk), file) != NULL)
+    {
+        if (chunk != NULL)
+        {
+            size_t newline_pos = strcspn(chunk, "\n");
+            chunk[newline_pos] = '\0';
+        }
+
+        if (lineNum == 0)
+        {
+            topic = (Topic *)malloc(sizeof(Topic));
+            if (topic == NULL)
+            {
+                printf("Memory allocation failed!");
+                return 1;
+            }
+            topic->id = atoi(chunk);
+        }
+        else if (lineNum == 1)
+        {
+            strcpy(topic->topicName, chunk);
+        }
+        else if (lineNum == 2)
+        {
+            topic->optionLength = atoi(chunk);
+            optionCount = topic->optionLength;
+        }
+        else if (lineNum == 3)
+        {
+            topic->isOpen = atoi(chunk);
+        }else if (lineNum == 4)
+        {
+            topic->category = atoi(chunk);
+        }
+        else if (lineNum <= optionCount + 5 && optionCount != 0)
+        {
+            topic->topicOptions[lineNum - 5] = malloc(strlen(chunk) + 1);
+            if (topic->topicOptions[lineNum - 5] == NULL)
+            {
+                printf("Memory allocation failed!");
+                return 1;
+            }
+            strcpy(topic->topicOptions[lineNum - 5], chunk);
+        }
+
+        lineNum++;
+
+        if (lineNum == optionCount + 5)
+        {   
+            topic->findVoteCountForTopic = findVoteCountForTopic;
+            topic->findVoteCountForTopicOption = findVoteCountForTopicOption;
+            topics[topicCount] = *topic;
+            topicCount++;
+            lineNum = 0;
+            optionCount = 0;
+        }
+    }
+    return 0;
 }
 
-int deletePerson(int id){
+int deletePerson(int id)
+{
     FILE *file = fopen("../txtFiles/person.txt", "r");
     FILE *temp = fopen("../txtFiles/temp.txt", "w");
 
@@ -163,7 +238,7 @@ int deletePerson(int id){
     }
 
     Person *person;
-    Person *tempUsers[userCount-1];
+    Person *tempUsers[userCount - 1];
     char chunk[128];
     int lineNum = 0;
     int personCount = 0;
@@ -172,7 +247,7 @@ int deletePerson(int id){
     {
         if (chunk != NULL)
         {
-            size_t newline_pos = strcspn(chunk, "\n"); 
+            size_t newline_pos = strcspn(chunk, "\n");
             chunk[newline_pos] = '\0';
         }
 
@@ -180,10 +255,12 @@ int deletePerson(int id){
         {
             person = (Person *)malloc(sizeof(Person));
             person->id = atoi(chunk);
-            if(person->id == id){
+            if (person->id == id)
+            {
                 skipPerson = true;
             }
-            else{
+            else
+            {
                 fprintf(temp, "%d\n", person->id);
             }
             lineNum++;
@@ -191,7 +268,8 @@ int deletePerson(int id){
         else if (lineNum % 6 == 1)
         {
             strcpy(person->name, chunk);
-            if(!skipPerson){
+            if (!skipPerson)
+            {
                 fprintf(temp, "%s\n", person->name);
             }
             lineNum++;
@@ -199,7 +277,8 @@ int deletePerson(int id){
         else if (lineNum % 6 == 2)
         {
             strcpy(person->username, chunk);
-            if(!skipPerson){
+            if (!skipPerson)
+            {
                 fprintf(temp, "%s\n", person->username);
             }
             lineNum++;
@@ -207,7 +286,8 @@ int deletePerson(int id){
         else if (lineNum % 6 == 3)
         {
             strcpy(person->password, chunk);
-            if(!skipPerson){
+            if (!skipPerson)
+            {
                 fprintf(temp, "%s\n", person->password);
             }
             lineNum++;
@@ -215,7 +295,8 @@ int deletePerson(int id){
         else if (lineNum % 6 == 4)
         {
             strcpy(person->mail, chunk);
-            if(!skipPerson){
+            if (!skipPerson)
+            {
                 fprintf(temp, "%s\n", person->mail);
             }
             lineNum++;
@@ -223,7 +304,8 @@ int deletePerson(int id){
         else if (lineNum % 6 == 5)
         {
             person->isAdmin = atoi(chunk);
-            if(!skipPerson){
+            if (!skipPerson)
+            {
                 fprintf(temp, "%d\n", person->isAdmin);
                 tempUsers[personCount] = person;
                 personCount++;
@@ -236,12 +318,13 @@ int deletePerson(int id){
     fclose(file);
     fclose(temp);
 
-    remove("../txtFiles/person.txt"); 
+    remove("../txtFiles/person.txt");
     rename("../txtFiles/temp.txt", "../txtFiles/person.txt");
 
     // Clear and update users array
     memset(users, 0, sizeof(users));
-    for(int i = 0; i < personCount; i++){
+    for (int i = 0; i < personCount; i++)
+    {
         users[i] = *tempUsers[i];
     }
     userCount = personCount;
@@ -249,7 +332,100 @@ int deletePerson(int id){
     return 0;
 }
 
-int updatePersonInformation(int id, char *newName, char *newUsername, char *newPassword, char *newMail){
+int deleteTopic(int id)
+{
+    FILE *file = fopen("../txtFiles/topic.txt", "r");
+    FILE *temp = fopen("../txtFiles/temp.txt", "w");
+
+    if (file == NULL || temp == NULL)
+    {
+        printf("Error while opening the file!");
+        return 1;
+    }
+
+    Topic *topic;
+    Topic *tempTopics[topicCount - 1];
+    char chunk[128];
+    int lineNum = 0;
+    int topicCount = 0;
+    int optionIndex = 0;
+    bool skipTopic = false;
+    while (fgets(chunk, sizeof(chunk), file) != NULL)
+    {
+        if (chunk != NULL)
+        {
+            size_t newline_pos = strcspn(chunk, "\n");
+            chunk[newline_pos] = '\0';
+        }
+
+        if (lineNum % (40 + 2) == 0)
+        {
+            topic = (Topic *)malloc(sizeof(Topic));
+            topic->id = atoi(chunk);
+            if (topic->id == id)
+            {
+                skipTopic = true;
+            }
+            else
+            {
+                fprintf(temp, "%d\n", topic->id);
+            }
+            lineNum++;
+        }
+        else if (lineNum % (40 + 2) == 1)
+        {
+            strcpy(topic->topicName, chunk);
+            if (!skipTopic)
+            {
+                fprintf(temp, "%s\n", topic->topicName);
+            }
+            lineNum++;
+        }
+        else if (lineNum % (40 + 2) >= 2 && lineNum % (40 + 2) < 42)
+        {
+            topic->topicOptions[optionIndex] = (char *)malloc(strlen(chunk) + 1);
+            strcpy(topic->topicOptions[optionIndex], chunk);
+            if (!skipTopic)
+            {
+                fprintf(temp, "%s\n", topic->topicOptions[optionIndex]);
+            }
+            optionIndex++;
+            lineNum++;
+        }
+        else if (lineNum % (40 + 2) == 42)
+        {
+            topic->optionLength = atoi(chunk);
+            if (!skipTopic)
+            {
+                fprintf(temp, "%d\n", topic->optionLength);
+                tempTopics[topicCount] = topic;
+                topicCount++;
+            }
+            skipTopic = false;
+            optionIndex = 0;
+            lineNum++;
+        }
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    remove("../txtFiles/topic.txt");
+    rename("../txtFiles/temp.txt", "../txtFiles/topic.txt");
+
+    // Clear and update topics array
+    memset(topics, 0, sizeof(topics));
+    for (int i = 0; i < topicCount; i++)
+    {
+        topics[i] = *tempTopics[i];
+    }
+    topicCount = topicCount;
+
+    return 0;
+}
+
+int updatePersonInformation(int id, char *newName, char *newUsername, char *newPassword, char *newMail)
+{
     FILE *file = fopen("../txtFiles/person.txt", "r");
     FILE *temp = fopen("../txtFiles/temp.txt", "w");
 
@@ -268,7 +444,7 @@ int updatePersonInformation(int id, char *newName, char *newUsername, char *newP
     {
         if (chunk != NULL)
         {
-            size_t newline_pos = strcspn(chunk, "\n"); 
+            size_t newline_pos = strcspn(chunk, "\n");
             chunk[newline_pos] = '\0';
         }
 
@@ -276,27 +452,29 @@ int updatePersonInformation(int id, char *newName, char *newUsername, char *newP
         {
             person = (Person *)malloc(sizeof(Person));
             person->id = atoi(chunk);
-            if(person->id == id){
+            if (person->id == id)
+            {
                 person->id = id;
                 strcpy(person->name, newName);
                 strcpy(person->username, newUsername);
                 strcpy(person->password, newPassword);
                 strcpy(person->mail, newMail);
-                if (person->id == 0) // Checking for admin 
+                if (person->id == 0) // Checking for admin
                 {
                     person->isAdmin = 1;
-                }else{
+                }
+                else // If he/she isn't admin, he/she is a user.
+                {
                     person->isAdmin = 0;
                 }
-                
-                
             }
             fprintf(temp, "%d\n", person->id);
             lineNum++;
         }
         else if (lineNum % 6 == 1)
         {
-            if(person->id != id){
+            if (person->id != id)
+            {
                 strcpy(person->name, chunk);
             }
             fprintf(temp, "%s\n", person->name);
@@ -304,7 +482,8 @@ int updatePersonInformation(int id, char *newName, char *newUsername, char *newP
         }
         else if (lineNum % 6 == 2)
         {
-            if(person->id != id){
+            if (person->id != id)
+            {
                 strcpy(person->username, chunk);
             }
             fprintf(temp, "%s\n", person->username);
@@ -312,7 +491,8 @@ int updatePersonInformation(int id, char *newName, char *newUsername, char *newP
         }
         else if (lineNum % 6 == 3)
         {
-            if(person->id != id){
+            if (person->id != id)
+            {
                 strcpy(person->password, chunk);
             }
             fprintf(temp, "%s\n", person->password);
@@ -320,7 +500,8 @@ int updatePersonInformation(int id, char *newName, char *newUsername, char *newP
         }
         else if (lineNum % 6 == 4)
         {
-            if(person->id != id){
+            if (person->id != id)
+            {
                 strcpy(person->mail, chunk);
             }
             fprintf(temp, "%s\n", person->mail);
@@ -328,7 +509,8 @@ int updatePersonInformation(int id, char *newName, char *newUsername, char *newP
         }
         else if (lineNum % 6 == 5)
         {
-            if(person->id != id){
+            if (person->id != id)
+            {
                 person->isAdmin = atoi(chunk);
             }
             fprintf(temp, "%d\n", person->isAdmin);
@@ -341,12 +523,13 @@ int updatePersonInformation(int id, char *newName, char *newUsername, char *newP
     fclose(file);
     fclose(temp);
 
-    remove("../txtFiles/person.txt"); 
+    remove("../txtFiles/person.txt");
     rename("../txtFiles/temp.txt", "../txtFiles/person.txt");
 
     // Clear and update users array
     memset(users, 0, sizeof(users));
-    for(int i = 0; i < personCount; i++){
+    for (int i = 0; i < personCount; i++)
+    {
         users[i] = *tempUsers[i];
     }
     userCount = personCount;
@@ -354,45 +537,21 @@ int updatePersonInformation(int id, char *newName, char *newUsername, char *newP
     return 0;
 }
 
-int findVoteCountForTopic(Topic topic)
-{
-    int total;
-    for (int i = 0; i < voteCount; i++)
-    {
-        if (votes[i].topic.id = topic.id)
-        {
-            total++;
-        }
-    }
-    return total;
-}
-
-int *findVoteCountForTopicOption(Topic topic)
-{
-    int *total = malloc(topic.optionLength * sizeof(int)); // Şık sayısı * integer'ın baytı
-    for (int i = 0; i < voteCount; i++)
-    {
-        if (votes[i].topic.id = topic.id)
-        {
-            total[votes[i].topicOptionIndex]++;
-        }
-    }
-    return total;
-}
-
 void showAllTopics()
 {
-    for (int i = 0; i < topicCount ; i++)
+    
+    for (int i = 0; i < topicCount; i++)
     {
         Color_Blue();
-        printf("------ %d. Topic ------\n",i+1);
+        printf("------ %d. Topic ------\n", i + 1);
         Color_Reset();
         printf("ID of the topic : %d\n", topics[i].id);
         printf("Name of the topic : %s\n", topics[i].topicName);
         printf("Number of option of the topic : %d\n", topics[i].optionLength);
+        printf("Category of the topic : %s\n", categories_names[topics[i].category]);
         for (int j = 0; j < topics[i].optionLength; j++)
         {
-            printf("%d. Option of the topic : %s\n",j+1,topics[i].topicOptions[j]);
+            printf("%d. Option of the topic : %s\n", j + 1, topics[i].topicOptions[j]);
         }
     }
 }

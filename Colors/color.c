@@ -16,6 +16,10 @@ void Color_Blue() {
     printf(ANSI_COLOR_BLUE);
 }
 
+void Color_Blue_Bold(){
+    printf(ANSI_COLOR_BLUE_BOLD);
+}
+
 void Color_Magenta() {
     printf(ANSI_COLOR_MAGENTA);
 }

@@ -10,34 +10,53 @@ int Display();
 
 int main()
 {
-    Person *admin = createPerson(0, "Admin", "admin", "123", "admin@gmail.com", true);
-    Person *user = createPerson(1, "Emirhan", "emirhan", "123", "emirhan@gmail.com", false);
-    Person *user1 = createPerson(2, "Asim", "asim", "123", "asim@gmail.com", false);
-    /*readPerson();
-    printf("Name of admin : %s\n",users[0].name);
+    //Person *admin = createPerson(0, "Admin", "admin", "123", "admin@gmail.com", true);
+    //Person *user = createPerson(1, "Emirhan", "emirhan", "123", "emirhan@gmail.com", false);
+    //Person *user1 = createPerson(2, "Asim", "asim", "123", "asim@gmail.com", false);
+    readPerson();
+    /*("Name of admin : %s\n",users[1].name);
     printf("ID of user : %d\n",users[1].id);
     printf("Name of user : %s\n",users[1].name);
     printf("Username of user : %s\n",users[1].username);
     printf("Mail of user : %s\n",users[1].mail);*/
 
-    /*char *topicOptions[MAX];
+    //char *topicOptions[4] = {"a","b","c","d"};
+    //char *topicOptions1[4] = {"e","f","g","h"};
+    //char *topicOptions2[4] = {"i","j","k","l"};
 
-    Topic topic = createTopic(0,"DolarTL",topicOptions,4);
-    printf("ID of topic : %d\n",topics[0].id);
-    printf("Name of topic : %s\n",topics[0].topicName);
-    printf("First Option of topic : %s\n", topics[0].topicOptions[0]);
-    printf("Second Option of topic : %s\n", topics[0].topicOptions[1]);
-    printf("Third Option of topic : %s\n", topics[0].topicOptions[2]);
-    printf("Fourth Option of topic : %s\n", topics[0].topicOptions[3]);*/
+    //Topic topic = createTopic(0,"DolarTL",topicOptions,4,TECHNOLOGY);
+    //Topic topic1 = createTopic(1,"EuroTL",topicOptions1,4,ECONOMY);
+    //Topic topic2 = createTopic(2,"PoundTL",topicOptions2,4,FSMVU);
+    readTopic();
+    /*printf("ID of topic : %d\n",topics[1].id);
+    printf("Name of topic : %s\n",topics[1].topicName);
+    printf("Number of topic option : %d\n", topics[1].optionLength);
+    printf("Open status of topic : %d\n", topics[1].isOpen);
+    printf("Category of topic : %s\n", categories_names[topics[1].category]);
+    printf("First Option of topic : %s\n", topics[1].topicOptions[0]);
+    printf("Second Option of topic : %s\n", topics[1].topicOptions[1]);
+    printf("Third Option of topic : %s\n", topics[1].topicOptions[2]);
+    printf("Fourth Option of topic : %s\n", topics[1].topicOptions[3]);*/
+   
 
-    // Vote vote = createVote(0,users[1],topics[0],1);
-    /*printf("ID of vote : %d\n",vote.id);
+    /*Vote vote = createVote(0,users[1],topics[0],1);
+    Vote vote2 = createVote(1,users[1],topics[0],1);
+    Vote vote3 = createVote(2,users[1],topics[0],1);
+    printf("ID of vote : %d\n",vote.id);
     printf("Voter of vote : %s\n",vote.voter.name);
     printf("Topic of vote : %s\n",vote.topic.topicName);
     printf("Topic Option Index of vote : %d\n",vote.topicOptionIndex);
-    printf("Vote Count : %d\n", voteCount);*/
-     
-    //Display();
+    printf("Vote Count : %d\n", voteCount);
+    printf("Test Method : %d\n", topics[0].findVoteCountForTopic(&topics[0]));
+    
+    
+    for (int i = 0; i < topics[0].optionLength; i++) {
+        printf("%d\n",topics[0].findVoteCountForTopicOption(&topics[0])[i]);
+    }*/
+    
+
+
+    Display();
     return 0;
 }
 
@@ -93,15 +112,23 @@ int Display()
 
                     topicOptions[i][strcspn(topicOptions[i], "\n")] = '\0'; // Remove newline character
                 }
+            
+                for (int i = 0; i < 4; i++) {
+                    printf("%d- %s\n",(i+1),categories_names[i]);
+                }
 
-                Topic topic = createTopic(topicCount, topicName, topicOptions, optionLength);
+                printf("Please choose a category for your topic : ");
+                scanf("%d" , &choice);
+                Categories category = (Categories) (choice-1);
+
+                Topic topic = createTopic(topicCount, topicName, topicOptions, optionLength, category);
                 Color_Green();
                 printf("\nTopic created successfully...\n");
                 Color_Reset();
                 break;
-
             case 2:
                 showAllTopics();
+                
                 break;
             default:
                 Color_Red();
