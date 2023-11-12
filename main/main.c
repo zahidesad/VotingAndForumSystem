@@ -10,9 +10,9 @@ int Display();
 
 int main()
 {
-    //Person *admin = createPerson(0, "Admin", "admin", "123", "admin@gmail.com", true);
-    //Person *user = createPerson(1, "Emirhan", "emirhan", "123", "emirhan@gmail.com", false);
-    //Person *user1 = createPerson(2, "Asim", "asim", "123", "asim@gmail.com", false);
+    // Person *admin = createPerson(0, "Admin", "admin", "123", "admin@gmail.com", true);
+    // Person *user = createPerson(1, "Emirhan", "emirhan", "123", "emirhan@gmail.com", false);
+    // Person *user1 = createPerson(2, "Asim", "asim", "123", "asim@gmail.com", false);
     readPerson();
     /*("Name of admin : %s\n",users[1].name);
     printf("ID of user : %d\n",users[1].id);
@@ -20,42 +20,62 @@ int main()
     printf("Username of user : %s\n",users[1].username);
     printf("Mail of user : %s\n",users[1].mail);*/
 
-    //char *topicOptions[4] = {"a","b","c","d"};
-    //char *topicOptions1[4] = {"e","f","g","h"};
-    //char *topicOptions2[4] = {"i","j","k","l"};
+    //char *topicOptions[4] = {"a", "b", "c", "d"};
+    //char *topicOptions1[4] = {"e", "f", "g", "h"};
+    //char *topicOptions2[4] = {"i", "j", "k", "l"};
 
-    //Topic topic = createTopic(0,"DolarTL",topicOptions,4,TECHNOLOGY);
-    //Topic topic1 = createTopic(1,"EuroTL",topicOptions1,4,ECONOMY);
-    //Topic topic2 = createTopic(2,"PoundTL",topicOptions2,4,FSMVU);
+    // Topic topic = createTopic(0,"DolarTL",topicOptions,4,TECHNOLOGY);
+    // Topic topic1 = createTopic(1,"EuroTL",topicOptions1,4,ECONOMY);
+    // Topic topic2 = createTopic(2,"PoundTL",topicOptions2,4,FSMVU);
     readTopic();
-    /*printf("ID of topic : %d\n",topics[1].id);
-    printf("Name of topic : %s\n",topics[1].topicName);
-    printf("Number of topic option : %d\n", topics[1].optionLength);
-    printf("Open status of topic : %d\n", topics[1].isOpen);
-    printf("Category of topic : %s\n", categories_names[topics[1].category]);
-    printf("First Option of topic : %s\n", topics[1].topicOptions[0]);
-    printf("Second Option of topic : %s\n", topics[1].topicOptions[1]);
-    printf("Third Option of topic : %s\n", topics[1].topicOptions[2]);
-    printf("Fourth Option of topic : %s\n", topics[1].topicOptions[3]);*/
-   
+    // char *newTopicOptions[4] = {"Artar", "Azalir", "Sabit", "Yorumsuz"};
+    // updateTopicInformation(0, "DOLARTL", newTopicOptions, 4, ECONOMY);
+    /*for (int i = 0; i < topicCount; i++)
+    {
+        if (topics[i].id == 0)
+        {
+            printf("ID of topic : %d\n", topics[i].id);
+            printf("Name of topic : %s\n", topics[i].topicName);
+            printf("Number of topic option : %d\n", topics[i].optionLength);
+            printf("Open status of topic : %d\n", topics[i].isOpen);
+            printf("Category of topic : %s\n", categories_names[topics[i].category]);
+            printf("First Option of topic : %s\n", topics[i].topicOptions[0]);
+            printf("Second Option of topic : %s\n", topics[i].topicOptions[1]);
+            printf("Third Option of topic : %s\n", topics[i].topicOptions[2]);
+            printf("Fourth Option of topic : %s\n", topics[i].topicOptions[3]);
+        }
+    }*/
+    // printf("Topic Count : %d\n" , topicCount);
+    /*deleteTopic(topics[0].id);
+    printf("ID of topic : %d\n", topics[2].id);
+    printf("Name of topic : %s\n", topics[2].topicName);
+    printf("Number of topic option : %d\n", topics[2].optionLength);
+    printf("Open status of topic : %d\n", topics[2].isOpen);
+    printf("Category of topic : %s\n", categories_names[topics[2].category]);
+    printf("First Option of topic : %s\n", topics[2].topicOptions[0]);
+    printf("Second Option of topic : %s\n", topics[2].topicOptions[1]);
+    printf("Third Option of topic : %s\n", topics[2].topicOptions[2]);
+    printf("Fourth Option of topic : %s\n", topics[2].topicOptions[3]);*/
+    // printf("Topic Count : %d\n" , topicCount);
+    // deletePerson(users[0].id);
+    // printf("User Count : %d\n" , userCount);
 
-    /*Vote vote = createVote(0,users[1],topics[0],1);
-    Vote vote2 = createVote(1,users[1],topics[0],1);
-    Vote vote3 = createVote(2,users[1],topics[0],1);
-    printf("ID of vote : %d\n",vote.id);
-    printf("Voter of vote : %s\n",vote.voter.name);
-    printf("Topic of vote : %s\n",vote.topic.topicName);
-    printf("Topic Option Index of vote : %d\n",vote.topicOptionIndex);
-    printf("Vote Count : %d\n", voteCount);
-    printf("Test Method : %d\n", topics[0].findVoteCountForTopic(&topics[0]));
-    
-    
-    for (int i = 0; i < topics[0].optionLength; i++) {
+    // Vote vote1 = createVote(0, users[1], topics[0], 2);
+    // Vote vote2 = createVote(1, users[2], topics[0], 3);
+    // Vote vote3 = createVote(2, users[1], topics[1], 1); // 2 1 1 1
+    readVote();
+    // deleteVote(votes[0].id); // 1 2 0 3 2 1 1 1 / 0 1 0 2 2 1 1 1
+    /*printf("ID of vote : %d\n", votes[0].id);
+    printf("Voter of vote : %s\n", votes[0].voter.name);
+    printf("Topic of vote : %s\n", votes[0].topic.topicName);
+    printf("Topic Option Index of vote : %d\n", votes[0].topicOptionIndex);
+    printf("Vote Count : %d\n", voteCount);*/
+    // printf("Test Method : %d\n", topics[0].findVoteCountForTopic(&topics[0]));
+
+    /*for (int i = 0; i < topics[0].optionLength; i++) {
         printf("%d\n",topics[0].findVoteCountForTopicOption(&topics[0])[i]);
     }*/
     
-
-
     Display();
     return 0;
 }
@@ -78,6 +98,11 @@ int Display()
             char topicName[MAX];
             int optionLength;
             char *topicOptions[MAX];
+
+            char newTopicName[MAX];
+            int newOptionLength;
+            char *newTopicOptions[MAX];
+            bool flag;
 
             printf("\n1- Create Topic\n");
             printf("2- Show All Topics\n");
@@ -112,14 +137,16 @@ int Display()
 
                     topicOptions[i][strcspn(topicOptions[i], "\n")] = '\0'; // Remove newline character
                 }
-            
-                for (int i = 0; i < 4; i++) {
-                    printf("%d- %s\n",(i+1),categories_names[i]);
-                }
 
-                printf("Please choose a category for your topic : ");
-                scanf("%d" , &choice);
-                Categories category = (Categories) (choice-1);
+                for (int i = 0; i < 4; i++)
+                {
+                    printf("%d- %s\n", (i + 1), categories_names[i]);
+                }
+                Color_White();
+                printf("\nPlease choose a category for your topic : ");
+                Color_Reset();
+                scanf("%d", &choice);
+                Categories category = (Categories)(choice - 1);
 
                 Topic topic = createTopic(topicCount, topicName, topicOptions, optionLength, category);
                 Color_Green();
@@ -128,13 +155,89 @@ int Display()
                 break;
             case 2:
                 showAllTopics();
-                
+                break;
+
+            case 3:
+                for (int i = 0; i < topicCount; i++)
+                {
+                    printf("\n%d- Name of Topic : %s / ID of Topic : %d\n", (i + 1), topics[i].topicName, topics[i].id);
+                }
+                Color_White();
+                printf("Please write the ID of the topic you want to update :");
+                scanf("%d", &option);
+                Color_Reset();
+
+                printf("\nPlease enter your new topic name : ");
+                gets(newTopicName);
+                gets(newTopicName);
+                printf("Please enter your new number of options : ");
+                scanf("%d", &newOptionLength);
+
+                for (int i = 0; i < newOptionLength; i++)
+                {
+                    printf("Please enter your %d. option: ", i + 1);
+                    newTopicOptions[i] = (char *)malloc(MAX * sizeof(char)); // Allocate memory to each array element
+                    if (newTopicOptions[i] == NULL)
+                    {
+                        printf("Memory allocation failed. Exiting...\n");
+                        return 1;
+                    }
+                    fflush(stdin);
+                    fgets(newTopicOptions[i], MAX, stdin);
+
+                    newTopicOptions[i][strcspn(newTopicOptions[i], "\n")] = '\0'; // Remove newline character
+                }
+
+                for (int i = 0; i < 4; i++)
+                {
+                    printf("%d- %s\n", (i + 1), categories_names[i]);
+                }
+                Color_White();
+                printf("\nPlease choose a category for your topic : ");
+                Color_Reset();
+                scanf("%d", &choice);
+                Categories newCategory = (Categories)(choice - 1);
+
+                updateTopicInformation(option, newTopicName, newTopicOptions, newOptionLength, newCategory);
+                Color_Green();
+                printf("\nTopic has been updated successfully\n");
+                Color_Reset();
+                break;
+
+            case 4:
+                for (int i = 0; i < topicCount; i++)
+                {
+                    printf("\n%d- Name of Topic : %s / ID of Topic : %d\n", (i + 1), topics[i].topicName, topics[i].id);
+                }
+                Color_White();
+                printf("\nPlease write the ID of the topic you want to delete :");
+                scanf("%d", &option);
+                Color_Reset();
+                comeback : 
+                flag = 0;   
+                for (int i = 0; i < voteCount; i++)
+                {
+                    if (votes[i].topic.id == option)
+                    {   
+                        flag = 1;
+                        deleteVote(votes[i].id);
+                    }
+                }
+                if (flag == 1)
+                {
+                    goto comeback;
+                }
+                deleteTopic(option);
+                Color_Green();
+                printf("\nTopic has been deleted successfully\n");
+                Color_Reset();
                 break;
             default:
                 Color_Red();
                 printf("\nInvalid option. Please select 1, 2, or 3.\n");
                 Color_Reset();
-                while (getchar() != '\n'); // To prevent it from going into an infinite loop when I enter data of String type.
+                while (getchar() != '\n')
+                    ; // To prevent it from going into an infinite loop when I enter data of String type.
                 break;
             }
         }
@@ -222,7 +325,8 @@ int Display()
                 Color_Red();
                 printf("Invalid option. Please select 1, 2 or 3.\n");
                 Color_Reset();
-                while (getchar() != '\n'); // To prevent it from going into an infinite loop when I enter data of String type.
+                while (getchar() != '\n')
+                    ; // To prevent it from going into an infinite loop when I enter data of String type.
                 break;
             }
         }

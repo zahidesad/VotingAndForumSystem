@@ -18,7 +18,6 @@ static int topicCount = 0;
 
 static const char *const categories_names[];
 
-
 Person *login(char *username, char *password)
 {
 
@@ -84,8 +83,8 @@ int insertVote(Vote vote)
         return 1;
     }
     fprintf(file, "%d\n", vote.id);
-    fprintf(file, "%s\n", vote.voter.name);
-    fprintf(file, "%s\n", vote.topic.topicName);
+    fprintf(file, "%d\n", vote.voter.id);
+    fprintf(file, "%d\n", vote.topic.id);
     fprintf(file, "%d\n", vote.topicOptionIndex);
 
     fclose(file);
@@ -149,6 +148,8 @@ int readPerson()
         }
     }
     userCount = personCount;
+    fclose(file);
+    return 0;
 }
 
 int readTopic()
@@ -196,7 +197,8 @@ int readTopic()
         else if (lineNum == 3)
         {
             topic->isOpen = atoi(chunk);
-        }else if (lineNum == 4)
+        }
+        else if (lineNum == 4)
         {
             topic->category = atoi(chunk);
         }
@@ -214,7 +216,7 @@ int readTopic()
         lineNum++;
 
         if (lineNum == optionCount + 5)
-        {   
+        {
             topic->findVoteCountForTopic = findVoteCountForTopic;
             topic->findVoteCountForTopicOption = findVoteCountForTopicOption;
             topics[topicCount] = *topic;
@@ -223,6 +225,72 @@ int readTopic()
             optionCount = 0;
         }
     }
+    fclose(file);
+    return 0;
+}
+
+int readVote()
+{
+    FILE *file = fopen("../txtFiles/vote.txt", "r");
+
+    if (file == NULL)
+    {
+        printf("Error while opening the file!");
+        return 1;
+    }
+    Vote *vote;
+    char chunk[128];
+    int lineNum = 0;
+    int tempVoteCount = 0;
+    while (fgets(chunk, sizeof(chunk), file) != NULL)
+    {
+
+        if (chunk != NULL)
+        {
+            size_t newline_pos = strcspn(chunk, "\n"); // \n kesmeye çalışıyoruz yoksa değerlerin için \n eklenir
+            chunk[newline_pos] = '\0';
+        }
+
+        if (lineNum % 4 == 0)
+        {
+            vote = (Vote *)malloc(sizeof(Vote));
+            vote->id = atoi(chunk);
+            lineNum++;
+        }
+        else if (lineNum % 4 == 1)
+        {
+            int voterId = atoi(chunk);
+            for (int i = 0; i < userCount; i++)
+            {
+                if (users[i].id == voterId)
+                {
+                    vote->voter = users[i];
+                }
+            }
+            lineNum++;
+        }
+        else if (lineNum % 4 == 2)
+        {
+            int topicId = atoi(chunk);
+            for (int i = 0; i < topicCount; i++)
+            {
+                if (topics[i].id == topicId)
+                {
+                    vote->topic = topics[i];
+                }
+            }
+            lineNum++;
+        }
+        else if (lineNum % 4 == 3)
+        {
+            vote->topicOptionIndex = atoi(chunk);
+            lineNum++;
+            votes[tempVoteCount] = *vote;
+            tempVoteCount++;
+        }
+    }
+    voteCount = tempVoteCount;
+    fclose(file);
     return 0;
 }
 
@@ -345,11 +413,12 @@ int deleteTopic(int id)
 
     Topic *topic;
     Topic *tempTopics[topicCount - 1];
-    char chunk[128];
+    char chunk[200];
     int lineNum = 0;
-    int topicCount = 0;
-    int optionIndex = 0;
+    int tempTopicCount = 0;
     bool skipTopic = false;
+    int optionCount = 0;
+
     while (fgets(chunk, sizeof(chunk), file) != NULL)
     {
         if (chunk != NULL)
@@ -358,7 +427,7 @@ int deleteTopic(int id)
             chunk[newline_pos] = '\0';
         }
 
-        if (lineNum % (40 + 2) == 0)
+        if (lineNum == 0)
         {
             topic = (Topic *)malloc(sizeof(Topic));
             topic->id = atoi(chunk);
@@ -372,7 +441,7 @@ int deleteTopic(int id)
             }
             lineNum++;
         }
-        else if (lineNum % (40 + 2) == 1)
+        else if (lineNum == 1)
         {
             strcpy(topic->topicName, chunk);
             if (!skipTopic)
@@ -381,29 +450,62 @@ int deleteTopic(int id)
             }
             lineNum++;
         }
-        else if (lineNum % (40 + 2) >= 2 && lineNum % (40 + 2) < 42)
-        {
-            topic->topicOptions[optionIndex] = (char *)malloc(strlen(chunk) + 1);
-            strcpy(topic->topicOptions[optionIndex], chunk);
-            if (!skipTopic)
-            {
-                fprintf(temp, "%s\n", topic->topicOptions[optionIndex]);
-            }
-            optionIndex++;
-            lineNum++;
-        }
-        else if (lineNum % (40 + 2) == 42)
+        else if (lineNum == 2)
         {
             topic->optionLength = atoi(chunk);
+            optionCount = topic->optionLength;
             if (!skipTopic)
             {
                 fprintf(temp, "%d\n", topic->optionLength);
-                tempTopics[topicCount] = topic;
-                topicCount++;
+            }
+            lineNum++;
+        }
+        else if (lineNum == 3)
+        {
+            topic->isOpen = atoi(chunk);
+            if (!skipTopic)
+            {
+                fprintf(temp, "%d\n", topic->isOpen);
+            }
+            lineNum++;
+        }
+        else if (lineNum == 4)
+        {
+            topic->category = atoi(chunk);
+            if (!skipTopic)
+            {
+                fprintf(temp, "%d\n", topic->category);
+            }
+            lineNum++;
+        }
+        else if (lineNum <= optionCount + 5 && optionCount != 0)
+        {
+            topic->topicOptions[lineNum - 5] = malloc(strlen(chunk) + 1);
+            if (topic->topicOptions[lineNum - 5] == NULL)
+            {
+                printf("Memory allocation failed!");
+                return 1;
+            }
+            strcpy(topic->topicOptions[lineNum - 5], chunk);
+            if (!skipTopic)
+            {
+                fprintf(temp, "%s\n", topic->topicOptions[lineNum - 5]);
+            }
+            lineNum++;
+        }
+
+        if (lineNum == optionCount + 5)
+        {
+            if (!skipTopic)
+            {
+                topic->findVoteCountForTopic = findVoteCountForTopic;
+                topic->findVoteCountForTopicOption = findVoteCountForTopicOption;
+                tempTopics[tempTopicCount] = topic;
+                tempTopicCount++;
             }
             skipTopic = false;
-            optionIndex = 0;
-            lineNum++;
+            lineNum = 0;
+            optionCount = 0;
         }
     }
 
@@ -415,11 +517,113 @@ int deleteTopic(int id)
 
     // Clear and update topics array
     memset(topics, 0, sizeof(topics));
-    for (int i = 0; i < topicCount; i++)
+    for (int i = 0; i < tempTopicCount; i++)
     {
         topics[i] = *tempTopics[i];
     }
-    topicCount = topicCount;
+    topicCount = tempTopicCount;
+
+    return 0;
+}
+
+int deleteVote(int voteId)
+{
+    FILE *file = fopen("../txtFiles/vote.txt", "r");
+    FILE *temp = fopen("../txtFiles/temp.txt", "w");
+
+    if (file == NULL || temp == NULL)
+    {
+        printf("Error while opening the file!");
+        return 1;
+    }
+
+    Vote *vote;
+    Vote *tempVotes[voteCount - 1];
+    char chunk[128];
+    int lineNum = 0;
+    int tempVoteCount = 0;
+    bool skipVote = false;
+    while (fgets(chunk, sizeof(chunk), file) != NULL)
+    {
+        if (chunk != NULL)
+        {
+            size_t newline_pos = strcspn(chunk, "\n");
+            chunk[newline_pos] = '\0';
+        }
+
+        if (lineNum % 4 == 0)
+        {
+            vote = (Vote *)malloc(sizeof(Vote));
+            vote->id = atoi(chunk);
+            if (vote->id == voteId)
+            {
+                skipVote = true;
+            }
+            else
+            {
+                fprintf(temp, "%d\n", vote->id);
+            }
+            lineNum++;
+        }
+        else if (lineNum % 4 == 1)
+        {
+            int voterId = atoi(chunk);
+            if (!skipVote)
+            {
+                for (int i = 0; i < userCount; i++)
+                {
+                    if (users[i].id == voterId)
+                    {
+                        vote->voter = users[i];
+                        fprintf(temp, "%d\n", vote->voter.id);
+                    }
+                }
+            }
+            lineNum++;
+        }
+        else if (lineNum % 4 == 2)
+        {
+            int topicId = atoi(chunk);
+            if (!skipVote)
+            {
+                for (int i = 0; i < topicCount; i++)
+                {
+                    if (topics[i].id == topicId)
+                    {
+                        vote->topic = topics[i];
+                        fprintf(temp, "%d\n", vote->topic.id);
+                    }
+                }
+            }
+            lineNum++;
+        }
+        else if (lineNum % 4 == 3)
+        {
+            vote->topicOptionIndex = atoi(chunk);
+            if (!skipVote)
+            {
+                fprintf(temp, "%d\n", vote->topicOptionIndex);
+                tempVotes[tempVoteCount] = vote;
+                tempVoteCount++;
+            }
+            skipVote = false;
+            lineNum++;
+        }
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    remove("../txtFiles/vote.txt");
+    rename("../txtFiles/temp.txt", "../txtFiles/vote.txt");
+
+    // Clear and update votes array
+    memset(votes, 0, sizeof(votes));
+    for (int i = 0; i < tempVoteCount; i++)
+    {
+        votes[i] = *tempVotes[i];
+    }
+    voteCount = tempVoteCount;
 
     return 0;
 }
@@ -537,9 +741,16 @@ int updatePersonInformation(int id, char *newName, char *newUsername, char *newP
     return 0;
 }
 
+int updateTopicInformation(int id, char *newTopicName, char *newTopicOptions[], int newOptionLength, Categories newCategory)
+{
+    deleteTopic(id);
+    createTopic(id, newTopicName, newTopicOptions, newOptionLength, newCategory);
+    return 0;
+}
+
 void showAllTopics()
 {
-    
+
     for (int i = 0; i < topicCount; i++)
     {
         Color_Blue();
@@ -554,4 +765,11 @@ void showAllTopics()
             printf("%d. Option of the topic : %s\n", j + 1, topics[i].topicOptions[j]);
         }
     }
+}
+
+void readAllData()
+{
+    readPerson();
+    readTopic();
+    readVote();
 }
