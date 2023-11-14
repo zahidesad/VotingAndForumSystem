@@ -21,7 +21,7 @@ typedef struct Topic
 }Topic;
 
 
-Topic createTopic(int id, char *topicName, char *topicOptions[], int optionLength, Categories category);
+Topic createTopic(int id, char *topicName, char *topicOptions[], int optionLength, Categories category,bool isOpen);
 
 int findVoteCountForTopic(Topic *self);
 

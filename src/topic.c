@@ -3,6 +3,19 @@
 #include <string.h>
 #include "../header/topic.h"
 
+#define calculateVoteRate(Id) \
+    do { \
+        double numberOfVote = 0; \
+        for (int i = 0; i < topicCount; i++) { \
+            if (topics[i].id == Id) { \
+                for (int j = 0; j < topics[i].optionLength; j++) { \
+                    numberOfVote = topics[i].findVoteCountForTopicOption(&topics[i])[j]; \
+                    printf("%d) %s --> Vote Count/Rate : %.0lf (%%%.2lf)\n", (j + 1), topics[i].topicOptions[j], numberOfVote, ((numberOfVote / findVoteCountForTopic(&topics[i])) * 100)); \
+                } \
+            } \
+        } \
+    } while(0)
+
 static const char *const categories_names[] = {
     [TECHNOLOGY] = "TECHNOLOGY",
     [ECONOMY] = "ECONOMY",
@@ -14,8 +27,6 @@ int findVoteCountForTopic(Topic *self)
     int total = 0;
     for (int i = 0; i < voteCount; i++)
     {
-        printf("Vote id : %d\n", votes[i].id);
-        printf("Topic id : %d\n", self->id);
         if (votes[i].topic.id == self->id)
         {
             total++;
@@ -28,7 +39,7 @@ int *findVoteCountForTopicOption(Topic *self)
 {
     int *total;
     total = malloc(self->optionLength * sizeof(int)); // Şık sayısı * integer'ın baytı
-    for (int i = 0; i < voteCount; i++) {
+    for (int i = 0; i < self->optionLength; i++) {
         total[i] = 0;
     }
 
@@ -42,7 +53,7 @@ int *findVoteCountForTopicOption(Topic *self)
     return total;
 }
 
-Topic createTopic(int id, char *topicName, char *topicOptions[], int optionLength,Categories category){
+Topic createTopic(int id, char *topicName, char *topicOptions[], int optionLength,Categories category, bool isOpen){
     Topic topic;
     topic.id = id;
     strcpy(topic.topicName , topicName);
@@ -51,7 +62,7 @@ Topic createTopic(int id, char *topicName, char *topicOptions[], int optionLengt
         topic.topicOptions[i] = topicOptions[i];   
     }
     topic.optionLength = optionLength; 
-    topic.isOpen = true;
+    topic.isOpen = isOpen;
     topic.category = category;
     topic.findVoteCountForTopic = findVoteCountForTopic;
     topic.findVoteCountForTopicOption = findVoteCountForTopicOption;

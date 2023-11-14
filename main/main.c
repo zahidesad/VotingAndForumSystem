@@ -20,9 +20,9 @@ int main()
     printf("Username of user : %s\n",users[1].username);
     printf("Mail of user : %s\n",users[1].mail);*/
 
-    //char *topicOptions[4] = {"a", "b", "c", "d"};
-    //char *topicOptions1[4] = {"e", "f", "g", "h"};
-    //char *topicOptions2[4] = {"i", "j", "k", "l"};
+    // char *topicOptions[4] = {"a", "b", "c", "d"};
+    // char *topicOptions1[4] = {"e", "f", "g", "h"};
+    // char *topicOptions2[4] = {"i", "j", "k", "l"};
 
     // Topic topic = createTopic(0,"DolarTL",topicOptions,4,TECHNOLOGY);
     // Topic topic1 = createTopic(1,"EuroTL",topicOptions1,4,ECONOMY);
@@ -62,20 +62,20 @@ int main()
 
     // Vote vote1 = createVote(0, users[1], topics[0], 2);
     // Vote vote2 = createVote(1, users[2], topics[0], 3);
-    // Vote vote3 = createVote(2, users[1], topics[1], 1); // 2 1 1 1
+    // Vote vote3 = createVote(2, users[1], topics[1], 1);
     readVote();
     // deleteVote(votes[0].id); // 1 2 0 3 2 1 1 1 / 0 1 0 2 2 1 1 1
     /*printf("ID of vote : %d\n", votes[0].id);
     printf("Voter of vote : %s\n", votes[0].voter.name);
     printf("Topic of vote : %s\n", votes[0].topic.topicName);
     printf("Topic Option Index of vote : %d\n", votes[0].topicOptionIndex);
-    printf("Vote Count : %d\n", voteCount);*/
-    // printf("Test Method : %d\n", topics[0].findVoteCountForTopic(&topics[0]));
+    printf("Vote Count : %d\n", voteCount);
+    printf("Test Method : %d\n", topics[0].findVoteCountForTopic(&topics[0]));
 
-    /*for (int i = 0; i < topics[0].optionLength; i++) {
-        printf("%d\n",topics[0].findVoteCountForTopicOption(&topics[0])[i]);
+    for (int i = 0; i < topics[0].optionLength; i++)
+    {
+        printf("%d\n", topics[0].findVoteCountForTopicOption(&topics[0])[i]);
     }*/
-    
     Display();
     return 0;
 }
@@ -108,6 +108,8 @@ int Display()
             printf("2- Show All Topics\n");
             printf("3- Update Topic\n");
             printf("4- Delete Topic\n");
+            printf("5- View your vote rates\n");
+            printf("6- Open/close topics for voting\n");
 
             Color_White();
             printf("\nSelect an option : ");
@@ -148,7 +150,7 @@ int Display()
                 scanf("%d", &choice);
                 Categories category = (Categories)(choice - 1);
 
-                Topic topic = createTopic(topicCount, topicName, topicOptions, optionLength, category);
+                Topic topic = createTopic(topicCount, topicName, topicOptions, optionLength, category,1);
                 Color_Green();
                 printf("\nTopic created successfully...\n");
                 Color_Reset();
@@ -198,7 +200,7 @@ int Display()
                 scanf("%d", &choice);
                 Categories newCategory = (Categories)(choice - 1);
 
-                updateTopicInformation(option, newTopicName, newTopicOptions, newOptionLength, newCategory);
+                updateTopicInformation(option, newTopicName, newTopicOptions, newOptionLength, newCategory,1);
                 Color_Green();
                 printf("\nTopic has been updated successfully\n");
                 Color_Reset();
@@ -213,12 +215,12 @@ int Display()
                 printf("\nPlease write the ID of the topic you want to delete :");
                 scanf("%d", &option);
                 Color_Reset();
-                comeback : 
-                flag = 0;   
+            comeback:
+                flag = 0;
                 for (int i = 0; i < voteCount; i++)
                 {
                     if (votes[i].topic.id == option)
-                    {   
+                    {
                         flag = 1;
                         deleteVote(votes[i].id);
                     }
@@ -232,6 +234,36 @@ int Display()
                 printf("\nTopic has been deleted successfully\n");
                 Color_Reset();
                 break;
+
+            case 5:
+                for (int i = 0; i < topicCount; i++)
+                {
+                    printf("\n%d- Name of Topic : %s / ID of Topic : %d\n", (i + 1), topics[i].topicName, topics[i].id);
+                }
+                int id = 0;
+                Color_White();
+                printf("\nPlease enter the ID of the topic for which you want to view the vote rate : ");
+                scanf("%d", &id);
+                Color_Reset();
+                calculateVoteRate(id);
+                break;
+
+            case 6 :
+                for (int i = 0; i < topicCount; i++)
+                {   
+                    char *statusName = "Close";
+                    if (topics[i].isOpen == 1)
+                    {
+                        statusName = "Open";
+                    }                  
+                    printf("\n%d- Name of Topic : %s / ID of Topic : %d / Open Status Of Topic : %s\n" , (i + 1), topics[i].topicName, topics[i].id,statusName);
+                }
+                int idOpenStatus = 0;
+                Color_White();
+                printf("\nPlease enter the ID of the topic for which you want to change open status : ");
+                scanf("%d", &idOpenStatus);
+                changeOpenStatus(idOpenStatus);
+                break;                
             default:
                 Color_Red();
                 printf("\nInvalid option. Please select 1, 2, or 3.\n");

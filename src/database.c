@@ -61,6 +61,7 @@ int insertTopic(Topic topic)
         return 1;
     }
     fprintf(file, "%d\n", topic.id);
+    printf("Inside of insert topic : %s\n", topic.topicName);
     fprintf(file, "%s\n", topic.topicName);
     fprintf(file, "%d\n", topic.optionLength);
     fprintf(file, "%d\n", topic.isOpen);
@@ -741,10 +742,12 @@ int updatePersonInformation(int id, char *newName, char *newUsername, char *newP
     return 0;
 }
 
-int updateTopicInformation(int id, char *newTopicName, char *newTopicOptions[], int newOptionLength, Categories newCategory)
+int updateTopicInformation(int id, char *newTopicName, char *newTopicOptions[], int newOptionLength, Categories newCategory, bool isOpen)
 {
+    char *topicName = malloc(sizeof(newTopicName));
+    strcpy(topicName, newTopicName);
     deleteTopic(id);
-    createTopic(id, newTopicName, newTopicOptions, newOptionLength, newCategory);
+    createTopic(id, topicName, newTopicOptions, newOptionLength, newCategory, isOpen);
     return 0;
 }
 
@@ -772,4 +775,33 @@ void readAllData()
     readPerson();
     readTopic();
     readVote();
+}
+
+int changeOpenStatus(int id)
+{
+    char *newTopicName;
+    char *newTopicOptions[40];
+    int newOptionLength;
+    bool isOpen;
+    Categories newCategory;
+
+    for (int i = 0; i < topicCount; i++)
+    {
+        if (topics[i].id == id)
+        {
+            newTopicName = topics[i].topicName;
+            printf("Inside of changeOpenStatus : %s\n", newTopicName);
+            newOptionLength = topics[i].optionLength;
+            for (int j = 0; j < newOptionLength; j++)
+            {
+                newTopicOptions[j] = topics[i].topicOptions[j];
+            }
+            newCategory = topics[i].category;
+            isOpen = !topics[i].isOpen;
+            updateTopicInformation(id, newTopicName, newTopicOptions, newOptionLength, newCategory, isOpen);
+            break;
+        }
+    }
+
+    return 0;
 }
