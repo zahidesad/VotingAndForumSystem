@@ -103,6 +103,8 @@ int Display()
             int newOptionLength;
             char *newTopicOptions[MAX];
             bool flag;
+            int userIDForDelete = 0;
+            bool flagForUser = 0;
 
             printf("\n1- Create Topic\n");
             printf("2- Show All Topics\n");
@@ -110,6 +112,7 @@ int Display()
             printf("4- Delete Topic\n");
             printf("5- View your vote rates\n");
             printf("6- Open/close topics for voting\n");
+            printf("7- Delete User Account\n");
 
             Color_White();
             printf("\nSelect an option : ");
@@ -150,7 +153,7 @@ int Display()
                 scanf("%d", &choice);
                 Categories category = (Categories)(choice - 1);
 
-                Topic topic = createTopic(topicCount, topicName, topicOptions, optionLength, category,1);
+                Topic topic = createTopic(topicCount, topicName, topicOptions, optionLength, category, 1);
                 Color_Green();
                 printf("\nTopic created successfully...\n");
                 Color_Reset();
@@ -200,7 +203,7 @@ int Display()
                 scanf("%d", &choice);
                 Categories newCategory = (Categories)(choice - 1);
 
-                updateTopicInformation(option, newTopicName, newTopicOptions, newOptionLength, newCategory,1);
+                updateTopicInformation(option, newTopicName, newTopicOptions, newOptionLength, newCategory, 1);
                 Color_Green();
                 printf("\nTopic has been updated successfully\n");
                 Color_Reset();
@@ -248,22 +251,51 @@ int Display()
                 calculateVoteRate(id);
                 break;
 
-            case 6 :
+            case 6:
                 for (int i = 0; i < topicCount; i++)
-                {   
+                {
                     char *statusName = "Close";
                     if (topics[i].isOpen == 1)
                     {
                         statusName = "Open";
-                    }                  
-                    printf("\n%d- Name of Topic : %s / ID of Topic : %d / Open Status Of Topic : %s\n" , (i + 1), topics[i].topicName, topics[i].id,statusName);
+                    }
+                    printf("\n%d- Name of Topic : %s / ID of Topic : %d / Open Status Of Topic : %s\n", (i + 1), topics[i].topicName, topics[i].id, statusName);
                 }
                 int idOpenStatus = 0;
                 Color_White();
                 printf("\nPlease enter the ID of the topic for which you want to change open status : ");
                 scanf("%d", &idOpenStatus);
                 changeOpenStatus(idOpenStatus);
-                break;                
+                break;
+            case 7:
+                for (int i = 0; i < userCount; i++)
+                {
+                    printf("\n%d- Username : %s / ID of user : %d\n", (i + 1), users[i].username, users[i].id);
+                }
+                Color_White();
+                printf("\nPlease write the ID of the user you want to delete :");
+                scanf("%d", &userIDForDelete);
+                Color_Reset();
+            returnBack:
+                flagForUser = 0;
+                for (int i = 0; i < voteCount; i++)
+                {
+                    if (votes[i].voter.id == userIDForDelete)
+                    {
+                        flagForUser = 1;
+                        deleteVote(votes[i].id);
+                    }
+                }
+                if (flagForUser == 1)
+                {
+                    goto returnBack;
+                }
+                deletePerson(userIDForDelete);
+                Color_Green();
+                printf("\nTopic has been deleted successfully\n");
+                Color_Reset();
+                break;
+
             default:
                 Color_Red();
                 printf("\nInvalid option. Please select 1, 2, or 3.\n");

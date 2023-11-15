@@ -5,16 +5,23 @@
 
 #define calculateVoteRate(Id) \
     do { \
-        double numberOfVote = 0; \
+        int numberOfVote = 0; \
+        int voteCountForTopic = 0; \
         for (int i = 0; i < topicCount; i++) { \
             if (topics[i].id == Id) { \
+                voteCountForTopic = findVoteCountForTopic(&topics[i]);  \
                 for (int j = 0; j < topics[i].optionLength; j++) { \
                     numberOfVote = topics[i].findVoteCountForTopicOption(&topics[i])[j]; \
-                    printf("%d) %s --> Vote Count/Rate : %.0lf (%%%.2lf)\n", (j + 1), topics[i].topicOptions[j], numberOfVote, ((numberOfVote / findVoteCountForTopic(&topics[i])) * 100)); \
+                    if (voteCountForTopic != 0) { \
+                        printf("%d) %s --> Vote Count/Rate : %d (%%%.2f)\n", (j + 1), topics[i].topicOptions[j], numberOfVote, ((float)numberOfVote / voteCountForTopic) * 100); \
+                    } else { \
+                        printf("%d) %s --> Vote Count/Rate : %d (Undefined)\n", (j + 1), topics[i].topicOptions[j], numberOfVote); \
+                    } \
                 } \
             } \
         } \
     } while(0)
+
 
 static const char *const categories_names[] = {
     [TECHNOLOGY] = "TECHNOLOGY",
