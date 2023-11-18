@@ -753,20 +753,146 @@ int updateTopicInformation(int id, char *newTopicName, char *newTopicOptions[], 
 
 void showAllTopics()
 {
+    int choice = 0;
+    int countCategory1 = 0; // If there are no votes in this category, use them to determine
+    int countCategory2 = 0; // If there are no votes in this category, use them to determine
+    int countCategory3 = 0; // If there are no votes in this category, use them to determine
+    int countCategory4 = 0; // If there are no votes in this category, use them to determine
+    printf("\n1- TECHNOLOGY\n");
+    printf("2- ECONOMY\n");
+    printf("3- POLITICS\n");
+    printf("4- FSMVU\n");
+    Color_White();
+    printf("\nPlease choose which category of topics you want to view : ");
+    Color_Reset();
+    scanf("%d", &choice);
 
-    for (int i = 0; i < topicCount; i++)
+    switch (choice)
     {
-        Color_Blue();
-        printf("------ %d. Topic ------\n", i + 1);
+    case 1:
+        Color_Green();
+        printf("\n--------------- TECHNOLOGY ---------------\n\n");
         Color_Reset();
-        printf("ID of the topic : %d\n", topics[i].id);
-        printf("Name of the topic : %s\n", topics[i].topicName);
-        printf("Number of option of the topic : %d\n", topics[i].optionLength);
-        printf("Category of the topic : %s\n", categories_names[topics[i].category]);
-        for (int j = 0; j < topics[i].optionLength; j++)
+        for (int i = 0; i < topicCount; i++)
         {
-            printf("%d. Option of the topic : %s\n", j + 1, topics[i].topicOptions[j]);
+            if (topics[i].category == 0)
+            {
+                countCategory1++;
+                printf("ID of the topic : %d\n", topics[i].id);
+                printf("Name of the topic : %s\n", topics[i].topicName);
+                printf("Number of option of the topic : %d\n", topics[i].optionLength);
+                printf("Category of the topic : %s\n", categories_names[topics[i].category]);
+                for (int j = 0; j < topics[i].optionLength; j++)
+                {
+                    printf("%d. Option of the topic : %s\n", j + 1, topics[i].topicOptions[j]);
+                }
+                Color_Blue();
+                printf("-------------------------------\n");
+                Color_Reset();
+            }
         }
+        if (countCategory1 == 0)
+        {
+            Color_Red();
+            printf("\nYou don't have a topic in this category\n");
+            Color_Reset();
+        }
+        return;
+    case 2:
+        Color_Green();
+        printf("\n--------------- ECONOMY ---------------\n\n");
+        Color_Reset();
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].category == 1)
+            {
+                countCategory2++;
+                printf("ID of the topic : %d\n", topics[i].id);
+                printf("Name of the topic : %s\n", topics[i].topicName);
+                printf("Number of option of the topic : %d\n", topics[i].optionLength);
+                printf("Category of the topic : %s\n", categories_names[topics[i].category]);
+                for (int j = 0; j < topics[i].optionLength; j++)
+                {
+                    printf("%d. Option of the topic : %s\n", j + 1, topics[i].topicOptions[j]);
+                }
+                Color_Blue();
+                printf("-------------------------------\n");
+                Color_Reset();
+            }
+        }
+        if (countCategory2 == 0)
+        {
+            Color_Red();
+            printf("\nYou don't have a topic in this category\n");
+            Color_Reset();
+        }
+        return;
+    case 3:
+        Color_Green();
+        printf("\n--------------- POLITICS ---------------\n\n");
+        Color_Reset();
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].category == 2)
+            {
+                countCategory3++;
+                printf("ID of the topic : %d\n", topics[i].id);
+                printf("Name of the topic : %s\n", topics[i].topicName);
+                printf("Number of option of the topic : %d\n", topics[i].optionLength);
+                printf("Category of the topic : %s\n", categories_names[topics[i].category]);
+                for (int j = 0; j < topics[i].optionLength; j++)
+                {
+                    printf("%d. Option of the topic : %s\n", j + 1, topics[i].topicOptions[j]);
+                }
+                Color_Blue();
+                printf("-------------------------------\n");
+                Color_Reset();
+            }
+        }
+        if (countCategory3 == 0)
+        {
+            Color_Red();
+            printf("\nYou don't have a topic in this category\n");
+            Color_Reset();
+        }
+        return;
+
+    case 4:
+        Color_Green();
+        printf("\n--------------- FSMVU ---------------\n\n");
+        Color_Reset();
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].category == 3)
+            {
+                countCategory4++;
+                printf("ID of the topic : %d\n", topics[i].id);
+                printf("Name of the topic : %s\n", topics[i].topicName);
+                printf("Number of option of the topic : %d\n", topics[i].optionLength);
+                printf("Category of the topic : %s\n", categories_names[topics[i].category]);
+                for (int j = 0; j < topics[i].optionLength; j++)
+                {
+                    printf("%d. Option of the topic : %s\n", j + 1, topics[i].topicOptions[j]);
+                }
+                Color_Blue();
+                printf("-------------------------------\n");
+                Color_Reset();
+            }
+        }
+        if (countCategory4 == 0)
+        {
+            Color_Red();
+            printf("\nYou don't have a topic in this category\n");
+            Color_Reset();
+        }
+        return;
+    default:
+        Color_Red();
+        printf("Invalid option. Please select [1-4]\n");
+        Color_Reset();
+        while (getchar() != '\n')
+            ; // To prevent it from going into an infinite loop when I enter data of String type.
+        break;
     }
 }
 
@@ -778,6 +904,7 @@ void readAllData()
 }
 
 int changeOpenStatus(int id)
+
 {
     char *newTopicName;
     char *newTopicOptions[40];
@@ -804,4 +931,280 @@ int changeOpenStatus(int id)
     }
 
     return 0;
+}
+
+void voteOperation(Person *account)
+{
+    int categoryOption = 0;
+    int topicID = 0;
+    int countCategory1 = 0; // If there are no votes in this category, use them to determine
+    int countCategory2 = 0; // If there are no votes in this category, use them to determine
+    int countCategory3 = 0; // If there are no votes in this category, use them to determine
+    int countCategory4 = 0; // If there are no votes in this category, use them to determine
+    int optionIndex = 0;
+    bool flag = 0;
+
+    printf("\n1- TECHNOLOGY\n");
+    printf("2- ECONOMY\n");
+    printf("3- POLITICS\n");
+    printf("4- FSMVU\n");
+    Color_White();
+    printf("\nPlease choose which category of topics you want to vote : ");
+    Color_Reset();
+    scanf("%d", &categoryOption);
+
+    switch (categoryOption)
+    {
+    case 1:
+        Color_Green();
+        printf("\n--------------- TECHNOLOGY ---------------\n\n");
+        Color_Reset();
+        flag = 0;
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].category == 0 && topics[i].isOpen == 1)
+            {
+                countCategory1++;
+                printf("Name of the topic : %s / ID of the topic : %d\n", topics[i].topicName, topics[i].id);
+                Color_Blue();
+                printf("------------------------------------------------------\n");
+                Color_Reset();
+            }
+        }
+        if (countCategory1 == 0)
+        {
+            Color_Red();
+            printf("\nYou don't have a topic in this category\n");
+            Color_Reset();
+            break;
+        }
+        Color_White();
+        printf("\nPlease enter the ID of the topic you want to vote on : ");
+        Color_Reset();
+        scanf("%d", &topicID);
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].id == topicID && topics[i].category == 0)
+            {
+                flag = 1;
+                for (int j = 0; j < topics[i].optionLength; j++)
+                {
+                    printf("%d. Option of the topic : %s\n", j + 1, topics[i].topicOptions[j]);
+                }
+            }
+        }
+        if (flag == 0)
+        {
+            Color_Red();
+            printf("\nPlease enter valid ID!\n");
+            Color_Reset();
+            break;
+        }
+        Color_White();
+        printf("\nPlease enter which option you want to vote for : ");
+        Color_Reset();
+        scanf("%d", &optionIndex);
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].id == topicID && topics[i].category == 0)
+            {
+                createVote(voteCount, *account, topics[i], optionIndex - 1);
+                Color_Green();
+                printf("\nYou have voted successfully.\n");
+                Color_Reset();
+                break;
+            }
+        }
+        break;
+    case 2:
+        Color_Green();
+        printf("\n--------------- ECONOMY ---------------\n\n");
+        Color_Reset();
+        flag = 0;
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].category == 1 && topics[i].isOpen == 1)
+            {
+                countCategory2++;
+                printf("Name of the topic : %s / ID of the topic : %d\n", topics[i].topicName, topics[i].id);
+                Color_Blue();
+                printf("------------------------------------------------------\n");
+                Color_Reset();
+            }
+        }
+        if (countCategory2 == 0)
+        {
+            Color_Red();
+            printf("\nYou don't have a topic in this category\n");
+            Color_Reset();
+            break;
+        }
+        Color_White();
+        printf("\nPlease enter the ID of the topic you want to vote on : ");
+        Color_Reset();
+        scanf("%d", &topicID);
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].id == topicID && topics[i].category == 1)
+            {
+                flag = 1;
+                for (int j = 0; j < topics[i].optionLength; j++)
+                {
+                    printf("%d. Option of the topic : %s\n", j + 1, topics[i].topicOptions[j]);
+                }
+            }
+        }
+        if (flag == 0)
+        {
+            Color_Red();
+            printf("\nPlease enter valid ID!\n");
+            Color_Reset();
+            break;
+        }
+        Color_White();
+        printf("\nPlease enter which option you want to vote for : ");
+        Color_Reset();
+        scanf("%d", &optionIndex);
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].id == topicID && topics[i].category == 1)
+            {
+                createVote(voteCount, *account, topics[i], optionIndex - 1);
+                Color_Green();
+                printf("\nYou have voted successfully.\n");
+                Color_Reset();
+                break;
+            }
+        }
+        break;
+
+    case 3:
+        Color_Green();
+        printf("\n--------------- POLITICS ---------------\n\n");
+        Color_Reset();
+        flag = 0;
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].category == 2 && topics[i].isOpen == 1)
+            {
+                countCategory3++;
+                printf("Name of the topic : %s / ID of the topic : %d\n", topics[i].topicName, topics[i].id);
+                Color_Blue();
+                printf("------------------------------------------------------\n");
+                Color_Reset();
+            }
+        }
+        if (countCategory3 == 0)
+        {
+            Color_Red();
+            printf("\nYou don't have a topic in this category\n");
+            Color_Reset();
+            break;
+        }
+        Color_White();
+        printf("\nPlease enter the ID of the topic you want to vote on : ");
+        Color_Reset();
+        scanf("%d", &topicID);
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].id == topicID && topics[i].category == 2)
+            {
+                flag = 1;
+                for (int j = 0; j < topics[i].optionLength; j++)
+                {
+                    printf("%d. Option of the topic : %s\n", j + 1, topics[i].topicOptions[j]);
+                }
+            }
+        }
+        if (flag == 0)
+        {
+            Color_Red();
+            printf("\nPlease enter valid ID!\n");
+            Color_Reset();
+            break;
+        }
+        Color_White();
+        printf("\nPlease enter which option you want to vote for : ");
+        Color_Reset();
+        scanf("%d", &optionIndex);
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].id == topicID && topics[i].category == 2)
+            {
+                createVote(voteCount, *account, topics[i], optionIndex - 1);
+                Color_Green();
+                printf("\nYou have voted successfully.\n");
+                Color_Reset();
+                break;
+            }
+        }
+        break;
+
+    case 4:
+        Color_Green();
+        printf("\n--------------- FSMVU ---------------\n\n");
+        Color_Reset();
+        flag = 0;
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].category == 3 && topics[i].isOpen == 1)
+            {
+                countCategory4++;
+                printf("Name of the topic : %s / ID of the topic : %d\n", topics[i].topicName, topics[i].id);
+                Color_Blue();
+                printf("------------------------------------------------------\n");
+                Color_Reset();
+            }
+        }
+        if (countCategory4 == 0)
+        {
+            Color_Red();
+            printf("\nYou don't have a topic in this category\n");
+            Color_Reset();
+            break;
+        }
+        Color_White();
+        printf("\nPlease enter the ID of the topic you want to vote on : ");
+        Color_Reset();
+        scanf("%d", &topicID);
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].id == topicID && topics[i].category == 3)
+            {
+                flag = 1;
+                for (int j = 0; j < topics[i].optionLength; j++)
+                {
+                    printf("%d. Option of the topic : %s\n", j + 1, topics[i].topicOptions[j]);
+                }
+            }
+        }
+        if (flag == 0)
+        {
+            Color_Red();
+            printf("\nPlease enter valid ID!\n");
+            Color_Reset();
+            break;
+        }
+        Color_White();
+        printf("\nPlease enter which option you want to vote for : ");
+        Color_Reset();
+        scanf("%d", &optionIndex);
+        for (int i = 0; i < topicCount; i++)
+        {
+            if (topics[i].id == topicID && topics[i].category == 3)
+            {
+                createVote(voteCount, *account, topics[i], optionIndex - 1);
+                Color_Green();
+                printf("\nYou have voted successfully.\n");
+                Color_Reset();
+                break;
+            }
+        }
+        break;
+    default:
+        Color_Red();
+        printf("\nInvalid option. Please select [1-4]\n");
+        Color_Reset();
+        break;
+    }
 }

@@ -10,10 +10,10 @@ int Display();
 
 int main()
 {
+    readAllData();
     // Person *admin = createPerson(0, "Admin", "admin", "123", "admin@gmail.com", true);
     // Person *user = createPerson(1, "Emirhan", "emirhan", "123", "emirhan@gmail.com", false);
     // Person *user1 = createPerson(2, "Asim", "asim", "123", "asim@gmail.com", false);
-    readPerson();
     /*("Name of admin : %s\n",users[1].name);
     printf("ID of user : %d\n",users[1].id);
     printf("Name of user : %s\n",users[1].name);
@@ -27,7 +27,6 @@ int main()
     // Topic topic = createTopic(0,"DolarTL",topicOptions,4,TECHNOLOGY);
     // Topic topic1 = createTopic(1,"EuroTL",topicOptions1,4,ECONOMY);
     // Topic topic2 = createTopic(2,"PoundTL",topicOptions2,4,FSMVU);
-    readTopic();
     // char *newTopicOptions[4] = {"Artar", "Azalir", "Sabit", "Yorumsuz"};
     // updateTopicInformation(0, "DOLARTL", newTopicOptions, 4, ECONOMY);
     /*for (int i = 0; i < topicCount; i++)
@@ -63,7 +62,6 @@ int main()
     // Vote vote1 = createVote(0, users[1], topics[0], 2);
     // Vote vote2 = createVote(1, users[2], topics[0], 3);
     // Vote vote3 = createVote(2, users[1], topics[1], 1);
-    readVote();
     // deleteVote(votes[0].id); // 1 2 0 3 2 1 1 1 / 0 1 0 2 2 1 1 1
     /*printf("ID of vote : %d\n", votes[0].id);
     printf("Voter of vote : %s\n", votes[0].voter.name);
@@ -113,6 +111,7 @@ int Display()
             printf("5- View your vote rates\n");
             printf("6- Open/close topics for voting\n");
             printf("7- Delete User Account\n");
+            printf("8- Logout\n");
 
             Color_White();
             printf("\nSelect an option : ");
@@ -161,7 +160,6 @@ int Display()
             case 2:
                 showAllTopics();
                 break;
-
             case 3:
                 for (int i = 0; i < topicCount; i++)
                 {
@@ -295,10 +293,12 @@ int Display()
                 printf("\nTopic has been deleted successfully\n");
                 Color_Reset();
                 break;
-
+            case 8:
+                isLoggedIn = 0;
+                break;
             default:
                 Color_Red();
-                printf("\nInvalid option. Please select 1, 2, or 3.\n");
+                printf("\nInvalid option. Please select [1-8]\n");
                 Color_Reset();
                 while (getchar() != '\n')
                     ; // To prevent it from going into an infinite loop when I enter data of String type.
@@ -307,11 +307,80 @@ int Display()
         }
         else if (isLoggedIn && !account->isAdmin)
         {
+            int switchOption = 0;
+
+            char newName[30];
+            char newUsername[30];
+            char newPassword[30];
+            char newMail[50];
+
             Color_Green();
-            printf("--------- Welcome %s ---------", account->name);
+            printf("\n--------- Welcome %s ---------\n", account->name);
             Color_Reset();
+
+            printf("\n1- Show user information\n");
+            printf("2- Update user information\n");
+            printf("3- Vote for a topic\n");
+            printf("4- Logout\n");
+
+            Color_White();
+            fflush(stdin);
             printf("\nSelect an option : ");
-            scanf("%d", &option);
+            Color_Reset();
+            scanf("%d", &switchOption);
+
+            switch (switchOption)
+            {
+            case 1:
+                printf("\nName : %s\n", account->name);
+                printf("Username : %s\n", account->username);
+                printf("Password : %s\n", account->password);
+                printf("Mail : %s\n", account->mail);
+                break;
+            case 2:
+                Color_White();
+                printf("\nPlease enter your new name : ");
+                Color_Reset();
+                fflush(stdin);
+                gets(newName);
+
+                Color_White();
+                printf("Please enter your new username : ");
+                Color_Reset();
+                fflush(stdin);
+                gets(newUsername);
+
+                Color_White();
+                printf("Please enter your new password : ");
+                Color_Reset();
+                fflush(stdin);
+                gets(newPassword);
+
+                Color_White();
+                printf("Please enter your new mail : ");
+                Color_Reset();
+                fflush(stdin);
+                gets(newMail);
+
+                updatePersonInformation(account->id, newName, newUsername, newPassword, newMail);
+                Color_Green();
+                printf("\nAccount updated successfully\n");
+                Color_Reset();
+                break;
+            case 3:
+                voteOperation(account);
+                break;
+            case 4:
+                isLoggedIn = 0;
+                break;
+            default:
+                Color_Red();
+                printf("\nInvalid option. Please select 1, 2, or 3.\n");
+                Color_Reset();
+                while (getchar() != '\n')
+                    ; // To prevent it from going into an infinite loop when I enter data of String type.
+                break;
+            }
         }
         else
         {
@@ -335,11 +404,16 @@ int Display()
             switch (option)
             {
             case 1:
+                Color_White();
                 printf("\nEnter your username: ");
-                gets(username);
+                Color_Reset();
+                fflush(stdin);
                 gets(username);
 
+                Color_White();
                 printf("Enter your password: ");
+                Color_Reset();
+                fflush(stdin);
                 gets(password);
 
                 Color_Yellow();
@@ -361,17 +435,28 @@ int Display()
                 break;
 
             case 2:
+                Color_White();
                 printf("\nEnter your name: ");
-                gets(name);
+                Color_Reset();
+                fflush(stdin);
                 gets(name);
 
+                Color_White();
                 printf("Enter your username: ");
+                Color_Reset();
+                fflush(stdin);
                 gets(username);
 
+                Color_White();
                 printf("Enter your password: ");
+                Color_Reset();
+                fflush(stdin);
                 gets(password);
 
+                Color_White();
                 printf("Enter your mail: ");
+                Color_Reset();
+                fflush(stdin);
                 gets(mail);
 
                 account = (createPerson(userCount, name, username, password, mail, 0));
