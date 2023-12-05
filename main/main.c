@@ -10,9 +10,10 @@ int Display();
 void defaultInformation();
 
 int main()
-{   
-    //defaultInformation(); // Run it once to only write the default data to the txt file.
+{
+    // defaultInformation(); // Run it once to only write the default data to the txt file.
     readAllData();
+    setAllIdNumbers();
     Display();
     return 0;
 }
@@ -22,7 +23,6 @@ int Display()
     Person *account;
     int option;
     int isLoggedIn = 0;
-
     while (true)
     {
         if (isLoggedIn && account->isAdmin)
@@ -91,10 +91,11 @@ int Display()
                 scanf("%d", &choice);
                 Categories category = (Categories)(choice - 1);
 
-                Topic topic = createTopic(topicCount, topicName, topicOptions, optionLength, category, 1);
+                Topic topic = createTopic(topicID, topicName, topicOptions, optionLength, category, 1);
                 Color_Green();
                 printf("\nTopic created successfully...\n");
                 Color_Reset();
+                topicID++;
                 break;
             case 2:
                 showAllTopics();
@@ -153,6 +154,7 @@ int Display()
                 }
                 Color_White();
                 printf("\nPlease write the ID of the topic you want to delete :");
+
                 scanf("%d", &option);
                 Color_Reset();
             comeback:
@@ -170,9 +172,6 @@ int Display()
                     goto comeback;
                 }
                 deleteTopic(option);
-                Color_Green();
-                printf("\nTopic has been deleted successfully\n");
-                Color_Reset();
                 break;
 
             case 5:
@@ -230,9 +229,6 @@ int Display()
                     goto returnBack;
                 }
                 deletePerson(userIDForDelete);
-                Color_Green();
-                printf("\nTopic has been deleted successfully\n");
-                Color_Reset();
                 break;
             case 8:
                 isLoggedIn = 0;
@@ -606,10 +602,11 @@ int Display()
                 fflush(stdin);
                 gets(mail);
 
-                account = (createPerson(userCount, name, username, password, mail, 0));
+                account = (createPerson(userID, name, username, password, mail, 0));
                 Color_Green();
                 printf("\nAccount created succesfully!\n\n");
                 Color_Green();
+                userID++;
                 isLoggedIn = 1;
                 break;
             case 3:

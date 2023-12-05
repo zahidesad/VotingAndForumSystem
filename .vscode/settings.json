@@ -4,7 +4,8 @@
         "string.h": "c",
         "stdlib.h": "c",
         "topic.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "limits": "c"
     },
 
 }

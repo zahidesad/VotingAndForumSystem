@@ -11,10 +11,13 @@
 
 static Person users[MAX];
 static int userCount = 0;
+static int userID = 0;
 static Vote votes[MAX];
 static int voteCount = 0;
+static int voteID = 0;
 static Topic topics[MAX];
 static int topicCount = 0;
+static int topicID = 0;
 
 static const char *const categories_names[];
 
@@ -296,6 +299,14 @@ int readVote()
 
 int deletePerson(int id)
 {
+    if (id < 0 || id >= userCount)
+    {
+        Color_Red();
+        printf("Please enter a valid number!");
+        Color_Reset();
+        return 0;
+    }
+
     FILE *file = fopen("../txtFiles/person.txt", "r");
     FILE *temp = fopen("../txtFiles/temp.txt", "w");
 
@@ -396,12 +407,33 @@ int deletePerson(int id)
         users[i] = *tempUsers[i];
     }
     userCount = personCount;
+    Color_Green();
+    printf("\nTopic has been deleted successfully\n");
+    Color_Reset();
 
     return 0;
 }
 
 int deleteTopic(int id)
 {
+    // Checking for given id is valid or not
+    int flag = 0;
+    for (int i = 0; i < topicCount; i++)
+    {
+        if (topics[i].id == id)
+        {
+            flag = 1;
+        }
+    }
+
+    if (flag == 0)
+    {
+        Color_Red();
+        printf("Please enter a valid number!");
+        Color_Reset();
+        return 0;
+    }
+
     FILE *file = fopen("../txtFiles/topic.txt", "r");
     FILE *temp = fopen("../txtFiles/temp.txt", "w");
 
@@ -523,6 +555,10 @@ int deleteTopic(int id)
     }
     topicCount = tempTopicCount;
 
+    Color_Green();
+    printf("\nTopic has been deleted successfully\n");
+    Color_Reset();
+
     return 0;
 }
 
@@ -630,6 +666,14 @@ int deleteVote(int voteId)
 
 int updatePersonInformation(int id, char *newName, char *newUsername, char *newPassword, char *newMail)
 {
+    if (id < 0 || id >= userCount)
+    {
+        Color_Red();
+        printf("Please enter a valid number!");
+        Color_Reset();
+        return 0;
+    }
+
     FILE *file = fopen("../txtFiles/person.txt", "r");
     FILE *temp = fopen("../txtFiles/temp.txt", "w");
 
@@ -743,8 +787,42 @@ int updatePersonInformation(int id, char *newName, char *newUsername, char *newP
 
 int updateTopicInformation(int id, char *newTopicName, char *newTopicOptions[], int newOptionLength, Categories newCategory, bool isOpen)
 {
+    // Checking for given id is valid or not
+    int flag = 0;
+    int flagForVote = 0;
+    for (int i = 0; i < topicCount; i++)
+    {
+        if (topics[i].id == id)
+        {
+            flag = 1;
+        }
+    }
+
+    if (flag == 0)
+    {
+        Color_Red();
+        printf("Please enter a valid number!");
+        Color_Reset();
+        return 0;
+    }
+
     char *topicName = malloc(sizeof(newTopicName));
     strcpy(topicName, newTopicName);
+    // Delete all vote for this topic
+goHere:
+    flagForVote = 0;
+    for (int i = 0; i < voteCount; i++)
+    {
+        if (votes[i].topic.id == id)
+        {
+            flagForVote = 1;
+            deleteVote(votes[i].id);
+        }
+    }
+    if (flagForVote == 1)
+    {
+        goto goHere;
+    }
     deleteTopic(id);
     createTopic(id, topicName, newTopicOptions, newOptionLength, newCategory, isOpen);
     return 0;
@@ -903,8 +981,25 @@ void readAllData()
 }
 
 int changeOpenStatus(int id)
-
 {
+    // Checking for given id is valid or not
+    int flag = 0;
+    for (int i = 0; i < topicCount; i++)
+    {
+        if (topics[i].id == id)
+        {
+            flag = 1;
+        }
+    }
+
+    if (flag == 0)
+    {
+        Color_Red();
+        printf("Please enter a valid number!");
+        Color_Reset();
+        return 0;
+    }
+
     char *newTopicName;
     char *newTopicOptions[40];
     int newOptionLength;
@@ -916,7 +1011,6 @@ int changeOpenStatus(int id)
         if (topics[i].id == id)
         {
             newTopicName = topics[i].topicName;
-            printf("Inside of changeOpenStatus : %s\n", newTopicName);
             newOptionLength = topics[i].optionLength;
             for (int j = 0; j < newOptionLength; j++)
             {
@@ -1007,10 +1101,11 @@ void voteOperation(Person *account)
         {
             if (topics[i].id == topicID && topics[i].category == 0)
             {
-                createVote(voteCount, *account, topics[i], optionIndex - 1);
+                createVote(voteID, *account, topics[i], optionIndex - 1);
                 Color_Green();
                 printf("\nYou have voted successfully.\n");
                 Color_Reset();
+                voteID++;
                 break;
             }
         }
@@ -1068,10 +1163,11 @@ void voteOperation(Person *account)
         {
             if (topics[i].id == topicID && topics[i].category == 1)
             {
-                createVote(voteCount, *account, topics[i], optionIndex - 1);
+                createVote(voteID, *account, topics[i], optionIndex - 1);
                 Color_Green();
                 printf("\nYou have voted successfully.\n");
                 Color_Reset();
+                voteID++;
                 break;
             }
         }
@@ -1130,10 +1226,11 @@ void voteOperation(Person *account)
         {
             if (topics[i].id == topicID && topics[i].category == 2)
             {
-                createVote(voteCount, *account, topics[i], optionIndex - 1);
+                createVote(voteID, *account, topics[i], optionIndex - 1);
                 Color_Green();
                 printf("\nYou have voted successfully.\n");
                 Color_Reset();
+                voteID++;
                 break;
             }
         }
@@ -1192,10 +1289,11 @@ void voteOperation(Person *account)
         {
             if (topics[i].id == topicID && topics[i].category == 3)
             {
-                createVote(voteCount, *account, topics[i], optionIndex - 1);
+                createVote(voteID, *account, topics[i], optionIndex - 1);
                 Color_Green();
                 printf("\nYou have voted successfully.\n");
                 Color_Reset();
+                voteID++;
                 break;
             }
         }
@@ -1206,4 +1304,40 @@ void voteOperation(Person *account)
         Color_Reset();
         break;
     }
+}
+
+void setAllIdNumbers()
+{
+    // For user
+    int maxForUser = users[0].id;
+    for (int i = 0; i < userCount; i++)
+    {
+        if (maxForUser < users[i].id)
+        {
+            maxForUser = users[i].id;
+        }
+    }
+    userID = maxForUser + 1;
+
+    // For topic
+    int maxForTopic = topics[0].id;
+    for (int i = 0; i < topicCount; i++)
+    {
+        if (maxForTopic < topics[i].id)
+        {
+            maxForTopic = topics[i].id;
+        }
+    }
+    topicID = maxForTopic + 1;
+
+    // For vote
+    int maxForVote = votes[0].id;
+    for (int i = 0; i < voteCount; i++)
+    {
+        if (maxForVote < votes[i].id)
+        {
+            maxForVote = votes[i].id;
+        }
+    }
+    voteID = maxForVote + 1;
 }
