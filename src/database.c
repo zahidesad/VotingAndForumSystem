@@ -61,7 +61,6 @@ int insertTopic(Topic topic)
         return 1;
     }
     fprintf(file, "%d\n", topic.id);
-    printf("Inside of insert topic : %s\n", topic.topicName);
     fprintf(file, "%s\n", topic.topicName);
     fprintf(file, "%d\n", topic.optionLength);
     fprintf(file, "%d\n", topic.isOpen);

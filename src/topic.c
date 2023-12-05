@@ -15,7 +15,7 @@
                     if (voteCountForTopic != 0) { \
                         printf("%d) %s --> Vote Count/Rate : %d (%%%.2f)\n", (j + 1), topics[i].topicOptions[j], numberOfVote, ((float)numberOfVote / voteCountForTopic) * 100); \
                     } else { \
-                        printf("%d) %s --> Vote Count/Rate : %d (Undefined)\n", (j + 1), topics[i].topicOptions[j], numberOfVote); \
+                        printf("%d) %s --> Vote Count/Rate : %d (%%%.2f)\n", (j + 1), topics[i].topicOptions[j], numberOfVote,0.00); \
                     } \
                 } \
             } \

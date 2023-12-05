@@ -1,27 +1,44 @@
-1
-EuroTL
-4
-1
-1
-e
-f
-g
-h
+0
+Will Baykar Technology company grow this year?
 2
-PoundTL
+1
+0
+Yes
+No
+1
+Will Apple company grow this year?
+2
+1
+0
+Yes
+No
+2
+Will the dollar lose value this year?
+2
+1
+1
+Yes
+No
+3
+Will the euro lose value this year?
+2
+1
+1
+Yes
+No
 4
+Who will win this year's elections?
+4
+1
+2
+A political party
+B political party
+C political party
+D political party
+5
+Will the rector of FSMVU change this year?
+2
 1
 3
-i
-j
-k
-l
-0
-DolarTL
-4
-1
-0
-a
-b
-c
-d
+Yes
+No

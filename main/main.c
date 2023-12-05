@@ -7,73 +7,12 @@
 #include "../Colors/color.c"
 
 int Display();
+void defaultInformation();
 
 int main()
-{
+{   
+    //defaultInformation(); // Run it once to only write the default data to the txt file.
     readAllData();
-    // Person *admin = createPerson(0, "Admin", "admin", "123", "admin@gmail.com", true);
-    // Person *user = createPerson(1, "Emirhan", "emirhan", "123", "emirhan@gmail.com", false);
-    // Person *user1 = createPerson(2, "Asim", "asim", "123", "asim@gmail.com", false);
-    /*("Name of admin : %s\n",users[1].name);
-    printf("ID of user : %d\n",users[1].id);
-    printf("Name of user : %s\n",users[1].name);
-    printf("Username of user : %s\n",users[1].username);
-    printf("Mail of user : %s\n",users[1].mail);*/
-
-    // char *topicOptions[4] = {"a", "b", "c", "d"};
-    // char *topicOptions1[4] = {"e", "f", "g", "h"};
-    // char *topicOptions2[4] = {"i", "j", "k", "l"};
-
-    // Topic topic = createTopic(0,"DolarTL",topicOptions,4,TECHNOLOGY);
-    // Topic topic1 = createTopic(1,"EuroTL",topicOptions1,4,ECONOMY);
-    // Topic topic2 = createTopic(2,"PoundTL",topicOptions2,4,FSMVU);
-    // char *newTopicOptions[4] = {"Artar", "Azalir", "Sabit", "Yorumsuz"};
-    // updateTopicInformation(0, "DOLARTL", newTopicOptions, 4, ECONOMY);
-    /*for (int i = 0; i < topicCount; i++)
-    {
-        if (topics[i].id == 0)
-        {
-            printf("ID of topic : %d\n", topics[i].id);
-            printf("Name of topic : %s\n", topics[i].topicName);
-            printf("Number of topic option : %d\n", topics[i].optionLength);
-            printf("Open status of topic : %d\n", topics[i].isOpen);
-            printf("Category of topic : %s\n", categories_names[topics[i].category]);
-            printf("First Option of topic : %s\n", topics[i].topicOptions[0]);
-            printf("Second Option of topic : %s\n", topics[i].topicOptions[1]);
-            printf("Third Option of topic : %s\n", topics[i].topicOptions[2]);
-            printf("Fourth Option of topic : %s\n", topics[i].topicOptions[3]);
-        }
-    }*/
-    // printf("Topic Count : %d\n" , topicCount);
-    /*deleteTopic(topics[0].id);
-    printf("ID of topic : %d\n", topics[2].id);
-    printf("Name of topic : %s\n", topics[2].topicName);
-    printf("Number of topic option : %d\n", topics[2].optionLength);
-    printf("Open status of topic : %d\n", topics[2].isOpen);
-    printf("Category of topic : %s\n", categories_names[topics[2].category]);
-    printf("First Option of topic : %s\n", topics[2].topicOptions[0]);
-    printf("Second Option of topic : %s\n", topics[2].topicOptions[1]);
-    printf("Third Option of topic : %s\n", topics[2].topicOptions[2]);
-    printf("Fourth Option of topic : %s\n", topics[2].topicOptions[3]);*/
-    // printf("Topic Count : %d\n" , topicCount);
-    // deletePerson(users[0].id);
-    // printf("User Count : %d\n" , userCount);
-
-    // Vote vote1 = createVote(0, users[1], topics[0], 2);
-    // Vote vote2 = createVote(1, users[2], topics[0], 3);
-    // Vote vote3 = createVote(2, users[1], topics[1], 1);
-    // deleteVote(votes[0].id); // 1 2 0 3 2 1 1 1 / 0 1 0 2 2 1 1 1
-    /*printf("ID of vote : %d\n", votes[0].id);
-    printf("Voter of vote : %s\n", votes[0].voter.name);
-    printf("Topic of vote : %s\n", votes[0].topic.topicName);
-    printf("Topic Option Index of vote : %d\n", votes[0].topicOptionIndex);
-    printf("Vote Count : %d\n", voteCount);
-    printf("Test Method : %d\n", topics[0].findVoteCountForTopic(&topics[0]));
-
-    for (int i = 0; i < topics[0].optionLength; i++)
-    {
-        printf("%d\n", topics[0].findVoteCountForTopicOption(&topics[0])[i]);
-    }*/
     Display();
     return 0;
 }
@@ -248,7 +187,6 @@ int Display()
                 Color_Reset();
                 calculateVoteRate(id);
                 break;
-
             case 6:
                 for (int i = 0; i < topicCount; i++)
                 {
@@ -268,7 +206,10 @@ int Display()
             case 7:
                 for (int i = 0; i < userCount; i++)
                 {
-                    printf("\n%d- Username : %s / ID of user : %d\n", (i + 1), users[i].username, users[i].id);
+                    if (users[i].isAdmin == 0)
+                    {
+                        printf("\n%d- Username : %s / ID of user : %d\n", (i), users[i].username, users[i].id);
+                    }
                 }
                 Color_White();
                 printf("\nPlease write the ID of the user you want to delete :");
@@ -308,7 +249,14 @@ int Display()
         else if (isLoggedIn && !account->isAdmin)
         {
             int switchOption = 0;
-
+            int categoryOption = 0;
+            int topicID = 0;
+            int countCategory1 = 0; // If there are no votes in this category, use them to determine
+            int countCategory2 = 0; // If there are no votes in this category, use them to determine
+            int countCategory3 = 0; // If there are no votes in this category, use them to determine
+            int countCategory4 = 0; // If there are no votes in this category, use them to determine
+            int optionIndex = 0;
+            bool flag = 0;
             char newName[30];
             char newUsername[30];
             char newPassword[30];
@@ -321,7 +269,8 @@ int Display()
             printf("\n1- Show user information\n");
             printf("2- Update user information\n");
             printf("3- Vote for a topic\n");
-            printf("4- Logout\n");
+            printf("4- View vote rates\n");
+            printf("5- Logout\n");
 
             Color_White();
             fflush(stdin);
@@ -371,6 +320,204 @@ int Display()
                 voteOperation(account);
                 break;
             case 4:
+                printf("\n1- TECHNOLOGY\n");
+                printf("2- ECONOMY\n");
+                printf("3- POLITICS\n");
+                printf("4- FSMVU\n");
+                Color_White();
+                printf("\nPlease choose which category you want to look at the vote rate of a topic : ");
+                Color_Reset();
+                scanf("%d", &categoryOption);
+
+                switch (categoryOption)
+                {
+                case 1:
+                    Color_Green();
+                    printf("\n--------------- TECHNOLOGY ---------------\n\n");
+                    Color_Reset();
+                    flag = 0;
+                    for (int i = 0; i < topicCount; i++)
+                    {
+                        if (topics[i].category == 0)
+                        {
+                            countCategory1++;
+                            printf("Name of the topic : %s / ID of the topic : %d\n", topics[i].topicName, topics[i].id);
+                            Color_Blue();
+                            printf("------------------------------------------------------\n");
+                            Color_Reset();
+                        }
+                    }
+                    if (countCategory1 == 0)
+                    {
+                        Color_Red();
+                        printf("\nYou don't have a topic in this category\n");
+                        Color_Reset();
+                        break;
+                    }
+                    Color_White();
+                    printf("\nPlease enter the ID of the topic for which you want to see the vote rate : ");
+                    Color_Reset();
+                    scanf("%d", &topicID);
+                    for (int i = 0; i < topicCount; i++)
+                    {
+                        if (topics[i].id == topicID && topics[i].category == 0)
+                        {
+                            flag = 1;
+                        }
+                    }
+                    if (flag == 1)
+                    {
+                        calculateVoteRate(topicID);
+                    }
+                    else
+                    {
+                        Color_Red();
+                        printf("\nPlease enter valid ID!\n");
+                        Color_Reset();
+                        break;
+                    }
+                    break;
+                case 2:
+                    Color_Green();
+                    printf("\n--------------- ECONOMY ---------------\n\n");
+                    Color_Reset();
+                    flag = 0;
+                    for (int i = 0; i < topicCount; i++)
+                    {
+                        if (topics[i].category == 1)
+                        {
+                            countCategory2++;
+                            printf("Name of the topic : %s / ID of the topic : %d\n", topics[i].topicName, topics[i].id);
+                            Color_Blue();
+                            printf("------------------------------------------------------\n");
+                            Color_Reset();
+                        }
+                    }
+                    if (countCategory2 == 0)
+                    {
+                        Color_Red();
+                        printf("\nYou don't have a topic in this category\n");
+                        Color_Reset();
+                        break;
+                    }
+                    Color_White();
+                    printf("\nPlease enter the ID of the topic for which you want to see the vote rate : ");
+                    Color_Reset();
+                    scanf("%d", &topicID);
+                    for (int i = 0; i < topicCount; i++)
+                    {
+                        if (topics[i].id == topicID && topics[i].category == 1)
+                        {
+                            flag = 1;
+                        }
+                    }
+                    if (flag == 1)
+                    {
+                        calculateVoteRate(topicID);
+                    }
+                    else
+                    {
+                        Color_Red();
+                        printf("\nPlease enter valid ID!\n");
+                        Color_Reset();
+                        break;
+                    }
+                    break;
+                case 3:
+                    Color_Green();
+                    printf("\n--------------- POLITICS ---------------\n\n");
+                    Color_Reset();
+                    flag = 0;
+                    for (int i = 0; i < topicCount; i++)
+                    {
+                        if (topics[i].category == 2)
+                        {
+                            countCategory3++;
+                            printf("Name of the topic : %s / ID of the topic : %d\n", topics[i].topicName, topics[i].id);
+                            Color_Blue();
+                            printf("------------------------------------------------------\n");
+                            Color_Reset();
+                        }
+                    }
+                    if (countCategory3 == 0)
+                    {
+                        Color_Red();
+                        printf("\nYou don't have a topic in this category\n");
+                        Color_Reset();
+                        break;
+                    }
+                    Color_White();
+                    printf("\nPlease enter the ID of the topic for which you want to see the vote rate : ");
+                    Color_Reset();
+                    scanf("%d", &topicID);
+                    for (int i = 0; i < topicCount; i++)
+                    {
+                        if (topics[i].id == topicID && topics[i].category == 2)
+                        {
+                            flag = 1;
+                        }
+                    }
+                    if (flag == 1)
+                    {
+                        calculateVoteRate(topicID);
+                    }
+                    else
+                    {
+                        Color_Red();
+                        printf("\nPlease enter valid ID!\n");
+                        Color_Reset();
+                        break;
+                    }
+                    break;
+                case 4:
+                    Color_Green();
+                    printf("\n--------------- FSMVU ---------------\n\n");
+                    Color_Reset();
+                    flag = 0;
+                    for (int i = 0; i < topicCount; i++)
+                    {
+                        if (topics[i].category == 3)
+                        {
+                            countCategory4++;
+                            printf("Name of the topic : %s / ID of the topic : %d\n", topics[i].topicName, topics[i].id);
+                            Color_Blue();
+                            printf("------------------------------------------------------\n");
+                            Color_Reset();
+                        }
+                    }
+                    if (countCategory4 == 0)
+                    {
+                        Color_Red();
+                        printf("\nYou don't have a topic in this category\n");
+                        Color_Reset();
+                        break;
+                    }
+                    Color_White();
+                    printf("\nPlease enter the ID of the topic for which you want to see the vote rate : ");
+                    Color_Reset();
+                    scanf("%d", &topicID);
+                    for (int i = 0; i < topicCount; i++)
+                    {
+                        if (topics[i].id == topicID && topics[i].category == 3)
+                        {
+                            flag = 1;
+                        }
+                    }
+                    if (flag == 1)
+                    {
+                        calculateVoteRate(topicID);
+                    }
+                    else
+                    {
+                        Color_Red();
+                        printf("\nPlease enter valid ID!\n");
+                        Color_Reset();
+                        break;
+                    }
+                    break;
+                }
+                break;
+            case 5:
                 isLoggedIn = 0;
                 break;
             default:
@@ -481,4 +628,35 @@ int Display()
         }
     }
     return 0;
+}
+
+void defaultInformation()
+{
+    Person *admin = createPerson(0, "Admin", "admin", "123", "admin@gmail.com", true);
+    Person *user = createPerson(1, "Emirhan", "emirhan", "123", "emirhan@gmail.com", false);
+    Person *user1 = createPerson(2, "Asim", "asim", "123", "asim@gmail.com", false);
+
+    // About technology
+    char *topicOptions1[2] = {"Yes", "No"}; // Will Baykar Technology company grow this year?
+    char *topicOptions2[2] = {"Yes", "No"}; // Will Apple company grow this year?
+
+    // About economy
+    char *topicOptions3[2] = {"Yes", "No"}; // Will the dollar lose value this year?
+    char *topicOptions4[2] = {"Yes", "No"}; // Will the euro lose value this year?
+
+    // About politics
+    char *topicOptions5[4] = {"A political party", "B political party", "C political party", "D political party"}; // Who will win this year's elections?
+
+    // About FSMVU
+    char *topicOptions6[2] = {"Yes", "No"}; // Will the rector of FSMVU change this year?
+
+    Topic topic1 = createTopic(0, "Will Baykar Technology company grow this year?", topicOptions1, 2, TECHNOLOGY, 1);
+    Topic topic2 = createTopic(1, "Will Apple company grow this year?", topicOptions2, 2, TECHNOLOGY, 1);
+
+    Topic topic3 = createTopic(2, "Will the dollar lose value this year?", topicOptions3, 2, ECONOMY, 1);
+    Topic topic4 = createTopic(3, "Will the euro lose value this year?", topicOptions4, 2, ECONOMY, 1);
+
+    Topic topic5 = createTopic(4, "Who will win this year's elections?", topicOptions5, 4, POLITICS, 1);
+
+    Topic topic6 = createTopic(5, "Will the rector of FSMVU change this year?", topicOptions6, 2, FSMVU, 1);
 }

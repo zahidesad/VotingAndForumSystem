@@ -12,7 +12,7 @@ typedef struct Topic
 {
     int id;
     char topicName[200];
-    char *topicOptions[40]; 
+    char *topicOptions[100]; 
     int optionLength; // şık sayısı
     bool isOpen; 
     Categories category;
