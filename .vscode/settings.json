@@ -5,7 +5,8 @@
         "stdlib.h": "c",
         "topic.h": "c",
         "stdio.h": "c",
-        "limits": "c"
+        "limits": "c",
+        "stdbool.h": "c"
     },
 
 }

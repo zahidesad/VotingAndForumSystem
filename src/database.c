@@ -554,11 +554,6 @@ int deleteTopic(int id)
         topics[i] = *tempTopics[i];
     }
     topicCount = tempTopicCount;
-
-    Color_Green();
-    printf("\nTopic has been deleted successfully\n");
-    Color_Reset();
-
     return 0;
 }
 
@@ -1000,7 +995,7 @@ int changeOpenStatus(int id)
         return 0;
     }
 
-    char *newTopicName;
+    char *newTopicName = malloc(sizeof(char)*200);
     char *newTopicOptions[40];
     int newOptionLength;
     bool isOpen;
@@ -1018,7 +1013,12 @@ int changeOpenStatus(int id)
             }
             newCategory = topics[i].category;
             isOpen = !topics[i].isOpen;
-            updateTopicInformation(id, newTopicName, newTopicOptions, newOptionLength, newCategory, isOpen);
+
+            char *topicName = malloc(sizeof(char)*200);
+            strcpy(topicName, newTopicName);
+            deleteTopic(id);
+            createTopic(id, topicName, newTopicOptions, newOptionLength, newCategory, isOpen);
+
             break;
         }
     }

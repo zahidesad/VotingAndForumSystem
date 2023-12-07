@@ -106,12 +106,11 @@ int Display()
                     printf("\n%d- Name of Topic : %s / ID of Topic : %d\n", (i + 1), topics[i].topicName, topics[i].id);
                 }
                 Color_White();
-                printf("Please write the ID of the topic you want to update :");
+                printf("\nPlease write the ID of the topic you want to update :");
                 scanf("%d", &option);
                 Color_Reset();
-
                 printf("\nPlease enter your new topic name : ");
-                gets(newTopicName);
+                fflush(stdin);
                 gets(newTopicName);
                 printf("Please enter your new number of options : ");
                 scanf("%d", &newOptionLength);
@@ -126,8 +125,7 @@ int Display()
                         return 1;
                     }
                     fflush(stdin);
-                    fgets(newTopicOptions[i], MAX, stdin);
-
+                    gets(newTopicOptions[i]);
                     newTopicOptions[i][strcspn(newTopicOptions[i], "\n")] = '\0'; // Remove newline character
                 }
 
@@ -172,6 +170,10 @@ int Display()
                     goto comeback;
                 }
                 deleteTopic(option);
+                Color_Green();
+                printf("\nTopic has been deleted successfully\n");
+                Color_Reset();
+
                 break;
 
             case 5:
@@ -199,8 +201,12 @@ int Display()
                 int idOpenStatus = 0;
                 Color_White();
                 printf("\nPlease enter the ID of the topic for which you want to change open status : ");
+                Color_Reset();
                 scanf("%d", &idOpenStatus);
                 changeOpenStatus(idOpenStatus);
+                Color_Green();
+                printf("\nTopic open status has been changed successfully\n");
+                Color_Reset();
                 break;
             case 7:
                 for (int i = 0; i < userCount; i++)
