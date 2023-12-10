@@ -20,7 +20,7 @@ Vote createVote(int id, Person voter, Topic topic, int topicOptionIndex)
             return emptyVote;
         }
     }
-    if (topicOptionIndex >= 0 && topicOptionIndex <= topic.optionLength-1)
+    if (topicOptionIndex >= 0 && topicOptionIndex <= topic.optionLength - 1)
     {
         Vote vote;
         vote.id = id;
@@ -30,6 +30,9 @@ Vote createVote(int id, Person voter, Topic topic, int topicOptionIndex)
         insertVote(vote);
         votes[voteCount] = vote;
         voteCount++;
+        Color_Green();
+        printf("\nYou have voted successfully.\n");
+        Color_Reset();
         return vote;
     }
     else

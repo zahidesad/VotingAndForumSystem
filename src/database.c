@@ -1102,9 +1102,6 @@ void voteOperation(Person *account)
             if (topics[i].id == topicID && topics[i].category == 0)
             {
                 createVote(voteID, *account, topics[i], optionIndex - 1);
-                Color_Green();
-                printf("\nYou have voted successfully.\n");
-                Color_Reset();
                 voteID++;
                 break;
             }
@@ -1164,9 +1161,6 @@ void voteOperation(Person *account)
             if (topics[i].id == topicID && topics[i].category == 1)
             {
                 createVote(voteID, *account, topics[i], optionIndex - 1);
-                Color_Green();
-                printf("\nYou have voted successfully.\n");
-                Color_Reset();
                 voteID++;
                 break;
             }
@@ -1227,9 +1221,6 @@ void voteOperation(Person *account)
             if (topics[i].id == topicID && topics[i].category == 2)
             {
                 createVote(voteID, *account, topics[i], optionIndex - 1);
-                Color_Green();
-                printf("\nYou have voted successfully.\n");
-                Color_Reset();
                 voteID++;
                 break;
             }
@@ -1290,9 +1281,6 @@ void voteOperation(Person *account)
             if (topics[i].id == topicID && topics[i].category == 3)
             {
                 createVote(voteID, *account, topics[i], optionIndex - 1);
-                Color_Green();
-                printf("\nYou have voted successfully.\n");
-                Color_Reset();
                 voteID++;
                 break;
             }
