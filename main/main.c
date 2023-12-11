@@ -20,7 +20,8 @@ int main()
 
 int Display()
 {
-    Person *account;
+    Person *account = (Person *)malloc(sizeof(Person));
+    ;
     int option;
     int isLoggedIn = 0;
     while (true)
@@ -312,7 +313,14 @@ int Display()
                 Color_Reset();
                 fflush(stdin);
                 gets(newMail);
-
+                strncpy(account->name, newName, sizeof(account->name) - 1);
+                account->name[sizeof(account->name) - 1] = '\0';
+                strncpy(account->username, newUsername, sizeof(account->username) - 1);
+                account->username[sizeof(account->username) - 1] = '\0';
+                strncpy(account->password, newPassword, sizeof(account->password) - 1);
+                account->password[sizeof(account->password) - 1] = '\0';
+                strncpy(account->mail, newMail, sizeof(account->mail) - 1);
+                account->mail[sizeof(account->mail) - 1] = '\0';
                 updatePersonInformation(account->id, newName, newUsername, newPassword, newMail);
                 Color_Green();
                 printf("\nAccount updated successfully\n");
